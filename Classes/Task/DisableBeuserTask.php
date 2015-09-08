@@ -26,10 +26,14 @@ class DisableBeuserTask extends AbstractTask {
 	 */
 	protected $timeOfInactivityToDisable = NULL;
 
+
+	protected $notificationEmail = NULL;
+
+
 	public function execute() {
 		$returnValue = FALSE;
 		$Logic = GeneralUtility::makeInstance(DisableBeuser::class);
-		$returnValue = $Logic->run( $this->getTimeOfInactivityToDisable() );
+		$returnValue = $Logic->run( $this->getTimeOfInactivityToDisable(), $this->getNotificationEmail() );
 		return $returnValue;
 	}
 
@@ -51,4 +55,27 @@ class DisableBeuserTask extends AbstractTask {
 	public function setTimeOfInactivityToDisable( $timeOfInactivityToDisable ) {
 		$this->timeOfInactivityToDisable = $timeOfInactivityToDisable;
 	}
+
+
+
+	/**
+	 * Get E-Mail Adress
+	 *
+	 * @return string
+	 */
+	public function getNotificationEmail() {
+		return $this->notificationEmail;
+	}
+
+	/**
+	 * Set E-Mail Adress
+	 *
+	 * @param string $email E-Mail Adress
+	 * @return void
+	 */
+	public function setNotificationEmail( $email ) {
+		$this->notificationEmail = $email;
+	}
+
+
 }

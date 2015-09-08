@@ -18,7 +18,7 @@ use \TYPO3\CMS\Backend\Utility\BackendUtility;
 
 class DisableBeuser{
 
-	public function run( $time ){
+	public function run( $time, $notificationEmail ){
 		$timestamp = $this->convertToTimeStamp( $time );
 
 		// update alle user
@@ -33,7 +33,7 @@ class DisableBeuser{
 					. BackendUtility::deleteClause( 'be_users' )
 					. BackendUtility::BEenableFields( 'be_users' );
 
-		$this->disableUser($normalUser);
+		$this->disableUser($normalUser, $notificationEmail);
 
 		// update alle user
 		// welche NICHT Administratoren sind
@@ -47,7 +47,7 @@ class DisableBeuser{
 							. BackendUtility::deleteClause( 'be_users' )
 							. BackendUtility::BEenableFields( 'be_users' );
 
-		$this->disableUser($userNeverLoggedIn);
+		$this->disableUser($userNeverLoggedIn, $notificationEmail);
 
 		return TRUE;
 	}
@@ -57,7 +57,12 @@ class DisableBeuser{
 		 return $dateTime->modify('-' . $time )->getTimeStamp();
 	}
 
-	public function disableUser( $where ){
+	public function disableUser( $where, $notificationEmail ){
+
+		if( !is_null($notificationEmail)){
+			debug($notificationEmail, '', __LINE__, __FILE__, '5');
+
+		}
 
 		$GLOBALS['TYPO3_DB']->exec_UPDATEquery(
 			'be_users',
