@@ -55,12 +55,13 @@ class DisableBeuserAdditionalFields implements AdditionalFieldProviderInterface{
 		);
 		if ($schedulerModule->CMD == 'edit') {
 			$taskInfo[$this->fieldName] = $task->getTimeOfInactivityToDisable();
+			debug($taskInfo);
+			debug($taskInfo[$this->fieldName]);
 		}
 
 		$additionalFields = array();
-		$selectHtmlCode = $this->getSelectHtmlCode( $taskInfo[$this->fieldName] );
-		$additionalFields[$this->fieldName] = array(
-			'code'     => $selectHtmlCode,
+		$additionalFields[ $this->fieldName ] = array(
+			'code'     => '<input type="text" name="tx_scheduler[' . $this->fieldName . '] value="' . $taskInfo[$this->fieldName] . '" />',
 			'label'    => 'Time of Inactivity to disable Beuser',
 			'cshKey'   => '',
 			'cshLabel' => ''
@@ -69,19 +70,6 @@ class DisableBeuserAdditionalFields implements AdditionalFieldProviderInterface{
 		return $additionalFields;
 	}
 
-	public function getSelectHtmlCode( $time ){
-		$options = '<option value="1">1 Monat</option>';
-		for ($i=2; $i <= 12 ; $i++) {
-			$options .= '<option value="' . $i . '"' . ($time == $i ? ' selected="selected"' : '') . '>' . $i . ' Monate</option>';
-		}
-
-		$selectField =
-		'<select name="tx_scheduler[' . $this->fieldName . ']">
-			' . $options . '
-		</select>';
-
-		return $selectField;
-	}
 
 	/**
 	 * Validates the additional fields' values
@@ -92,13 +80,18 @@ class DisableBeuserAdditionalFields implements AdditionalFieldProviderInterface{
 	 */
 	public function validateAdditionalFields(array &$submittedData, SchedulerModuleController $schedulerModule) {
 		$validInput = TRUE;
-		if(empty($submittedData[$this->fieldName])){
+		if( empty($submittedData[$this->fieldName]) ){
+			$schedulerModule->addMessage('keine Zeit hinterlegt.', FlashMessage::ERROR);
 			$validInput = FALSE;
 		}
-		if (empty($submittedData[$this->fieldName]) || !$validInput) {
-			$schedulerModule->addMessage('keine Zeit ausgewählt.', FlashMessage::ERROR);
+
+		try {
+			$date = new \DateTime( $submittedData[$this->fieldName] );
+		} catch (Exception $e) {
+			$schedulerModule->addMessage('falches Zeitformat hinterlegt' . htmlspecialchars($e->getMessage()), FlashMessage::ERROR);
 			$validInput = FALSE;
 		}
+
 		return $validInput;
 	}
 
