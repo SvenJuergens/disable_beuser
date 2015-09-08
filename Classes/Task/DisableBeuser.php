@@ -15,12 +15,18 @@ namespace SvenJuergens\DisableBeuser\Task;
  */
 
 use \TYPO3\CMS\Backend\Utility\BackendUtility;
+use \TYPO3\CMS\Core\Utility\GeneralUtility;
+use \TYPO3\CMS\Core\Mail\MailMessage;
+use \TYPO3\CMS\Core\Exception;
 
 class DisableBeuser{
 
-	public function run( $time, $notificationEmail ){
-		$timestamp = $this->convertToTimeStamp( $time );
+	protected $disabledUser = array();
 
+	public function run( $time, $notificationEmail ){
+
+		$returnValue = TRUE;
+		$timestamp = $this->convertToTimeStamp( $time );
 		// update alle user
 		// welche NICHT Administratoren sind
 		// und einen lastlogin kleiner/gleich $timestamp haben
@@ -49,7 +55,10 @@ class DisableBeuser{
 
 		$this->disableUser($userNeverLoggedIn, $notificationEmail);
 
-		return TRUE;
+		if(!empty($notificationEmail) && !empty($this->disabledUser)){
+			$returnValue = $this->sendEmail( $notificationEmail );
+		}
+		return $returnValue;
 	}
 
 	public function convertToTimeStamp( $time ){
@@ -58,16 +67,55 @@ class DisableBeuser{
 	}
 
 	public function disableUser( $where, $notificationEmail ){
-
-		if( !is_null($notificationEmail)){
-			debug($notificationEmail, '', __LINE__, __FILE__, '5');
-
+		if( !empty($notificationEmail) ){
+			$rows = array();
+			$rows = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
+				'username',
+				'be_users',
+				$where
+			);
+			$this->disabledUser = array_merge($this->disabledUser, $rows);
 		}
 
-		$GLOBALS['TYPO3_DB']->exec_UPDATEquery(
-			'be_users',
-			$where,
-			array('disable' => '1')
-		);
+		// $GLOBALS['TYPO3_DB']->exec_UPDATEquery(
+		// 	'be_users',
+		// 	$where,
+		// 	array('disable' => '1')
+		// );
+	}
+
+	public function sendEmail( $notificationEmail ){
+
+		$success = FALSE;
+		if( !GeneralUtility::validEmail($notificationEmail)){
+			return $success;
+		}
+
+		$mailBody =
+			'Disabled User'
+			. LF
+			. '- - - - - - - - - - - - - - - -'
+			. LF
+			. LF
+			. date('Y-m-d H:i:s', time())
+			. LF
+			;
+		foreach ($this->disabledUser as $key => $user) {
+					$mailBody .= $user['username'] . LF;
+		}
+
+		// Prepare mailer and send the mail
+		try {
+			$mailer = GeneralUtility::makeInstance( MailMessage::class );
+			$mailer->setFrom( $notificationEmail );
+			$mailer->setSubject('SCHEDULER-Task DisableBeuser:' . $GLOBALS['TYPO3_CONF_VARS']['SYS']['sitename'] );
+			$mailer->setBody( $mailBody );
+			$mailer->setTo( $notificationEmail );
+			$mailsSend = $mailer->send();
+			$success = $mailsSend > 0;
+		} catch ( Exception $e) {
+			throw new Exception( $e->getMessage() );
+		}
+		return $success;
 	}
 }
