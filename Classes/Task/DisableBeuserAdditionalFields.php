@@ -16,7 +16,6 @@ namespace SvenJuergens\DisableBeuser\Task;
 
 use \TYPO3\CMS\Scheduler\AdditionalFieldProviderInterface;
 use \TYPO3\CMS\Scheduler\Controller\SchedulerModuleController;
-use \TYPO3\CMS\Core\Utility\GeneralUtility;
 use \TYPO3\CMS\Core\Messaging\FlashMessage;
 use \TYPO3\CMS\Scheduler\Task\AbstractTask;
 
@@ -26,13 +25,6 @@ use \TYPO3\CMS\Scheduler\Task\AbstractTask;
  *
  */
 class DisableBeuserAdditionalFields implements AdditionalFieldProviderInterface{
-
-	/**
-	 * Additional fields
-	 *
-	 * @var array
-	 */
-	protected $fields = array('excludeUids');
 
 	/**
 	 * Field Name.
@@ -50,21 +42,18 @@ class DisableBeuserAdditionalFields implements AdditionalFieldProviderInterface{
 	 * @return array A two dimensional array, array('Identifier' => array('fieldId' => array('code' => '', 'label' => '', 'cshKey' => '', 'cshLabel' => ''))
 	 */
 	public function getAdditionalFields(array &$taskInfo, $task, SchedulerModuleController $schedulerModule) {
-		$fields = array(
-			'timeOfInactivityToDisable' => 'input'
-		);
+
 		if ($schedulerModule->CMD == 'edit') {
 			$taskInfo[$this->fieldName] = $task->getTimeOfInactivityToDisable();
-			debug($taskInfo);
-			debug($taskInfo[$this->fieldName]);
 		}
 
 		$additionalFields = array();
+		$placeHolderText = $GLOBALS['LANG']->sL('LLL:EXT:disable_beuser/locallang.xml:scheduler.placeholderText');
 		$additionalFields[ $this->fieldName ] = array(
-			'code'     => '<input type="text" name="tx_scheduler[' . $this->fieldName . '] value="' . $taskInfo[$this->fieldName] . '" />',
-			'label'    => 'Time of Inactivity to disable Beuser',
-			'cshKey'   => '',
-			'cshLabel' => ''
+			'code'     => '<input type="text" placeholder="' . $placeHolderText . '" name="tx_scheduler[' . $this->fieldName . ']" value="' . $taskInfo[$this->fieldName] . '" />',
+			'label'    => $GLOBALS['LANG']->sL('LLL:EXT:disable_beuser/locallang.xml:scheduler.fieldLabel'),
+			'cshKey'   => '_MOD_txdisablebeuser',
+			'cshLabel' => $this->fieldName
 		);
 
 		return $additionalFields;
@@ -81,14 +70,19 @@ class DisableBeuserAdditionalFields implements AdditionalFieldProviderInterface{
 	public function validateAdditionalFields(array &$submittedData, SchedulerModuleController $schedulerModule) {
 		$validInput = TRUE;
 		if( empty($submittedData[$this->fieldName]) ){
-			$schedulerModule->addMessage('keine Zeit hinterlegt.', FlashMessage::ERROR);
+			$schedulerModule->addMessage(
+				$GLOBALS['LANG']->sL('LLL:EXT:disable_beuser/locallang.xml:error.empty'),
+				FlashMessage::ERROR
+			);
 			$validInput = FALSE;
 		}
 
 		try {
 			$date = new \DateTime( $submittedData[$this->fieldName] );
-		} catch (Exception $e) {
-			$schedulerModule->addMessage('falches Zeitformat hinterlegt' . htmlspecialchars($e->getMessage()), FlashMessage::ERROR);
+		} catch ( \Exception $e) {
+			$schedulerModule->addMessage(
+				$GLOBALS['LANG']->sL('LLL:EXT:disable_beuser/locallang.xml:error.wrongFormat'),
+				FlashMessage::ERROR);
 			$validInput = FALSE;
 		}
 
@@ -106,6 +100,6 @@ class DisableBeuserAdditionalFields implements AdditionalFieldProviderInterface{
 		if (!$task instanceof DisableBeuserTask) {
 			throw new \InvalidArgumentException('Expected a task of type SvenJuergens\\DisableBeuser\\Task\\DisableBeuserTask, but got ' . get_class($task), 1295012802);
 		}
-		$task->setTimeOfInactivityToDisable($submittedData[$this->fieldName]);
+		$task->setTimeOfInactivityToDisable( htmlspecialchars($submittedData[$this->fieldName]) );
 	}
 }

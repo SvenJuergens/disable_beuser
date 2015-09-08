@@ -20,7 +20,7 @@ use \TYPO3\CMS\Core\Utility\GeneralUtility;
 class DisableBeuserTask extends AbstractTask {
 
 	/**
-	 * Uids of excluded Pages
+	 * Date/Time Format
 	 *
 	 * @var string
 	 */
@@ -34,7 +34,7 @@ class DisableBeuserTask extends AbstractTask {
 	}
 
 	/**
-	 * Gets the Uids to Exclude
+	 * Get the saved Date/Time Format
 	 *
 	 * @return string Comma-Separated Lists with uids to Exclude.
 	 */
@@ -43,9 +43,9 @@ class DisableBeuserTask extends AbstractTask {
 	}
 
 	/**
-	 * Sets the URLS to crawl.
+	 * Sets the Date/Time Format.
 	 *
-	 * @param string $urlsToCrawl URLS to crawl.
+	 * @param string $timeOfInactivityToDisable Date/Time Format.
 	 * @return void
 	 */
 	public function setTimeOfInactivityToDisable( $timeOfInactivityToDisable ) {

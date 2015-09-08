@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xliff version="1.0" xmlns:t3="http://typo3.org/schemas/xliff">
+	<file source-language="en" datatype="plaintext" original="messages" date="2015-09-08T00:00:00Z" product-name="disable_beuser">
+		<header/>
+		<body>
+			<trans-unit id="disablebeuser_timeOfInactivityToDisable.alttitle" xml:space="preserve">
+				<source>Time of Inactivity</source>
+			</trans-unit>
+			<trans-unit id="disablebeuser_timeOfInactivityToDisable.description" xml:space="preserve">
+				<source>Time of Inactivity before a user is disabled</source>
+			</trans-unit>
+			<trans-unit id="disablebeuser_timeOfInactivityToDisable.details" xml:space="preserve">
+				<source><![CDATA[ You have to set a correct Date/Time Format, for more details have a look at
+					PHP.net Date/Time Formats: http://php.net/manual/de/datetime.formats.php
+					some examples:
+						4 weeks
+						2 months
+						100 days
+						1 year
+						]]>
+				</source>
+			</trans-unit>
+		</body>
+	</file>
+</xliff>

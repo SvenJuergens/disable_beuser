@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<T3locallang>
+	<meta type="array">
+		<type>database</type>
+		<description>Language labels for database tables/fields belonging to extension 'disable_beuser'</description>
+	</meta>
+	<data type="array">
+		<languageKey index="default" type="array">
+			<label index="scheduler.placeholderText">e.g. 3 months</label>
+			<label index="scheduler.fieldLabel">Time of Inactivity to disable Beuser</label>
+			<label index="error.empty">please set a date/time format: http://php.net/manual/de/datetime.formats.php</label>
+			<label index="error.wrongFormat">please set a correct date/time format</label>
+		</languageKey>
+		<languageKey index="de" type="array">
+			<label index="scheduler.placeholderText">z.B. 3 months</label>
+			<label index="scheduler.fieldLabel">Zeitspanne nach der Benutzer deaktiviert werden sollen</label>
+			<label index="error.empty">Bitte ein Date/Time Format setzen</label>
+			<label index="error.wrongFormat">Bitte setze ein korrektes Date/Time Format: http://php.net/manual/de/datetime.formats.php </label>
+		</languageKey>
+	</data>
+</T3locallang>

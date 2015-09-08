@@ -18,7 +18,7 @@ use \TYPO3\CMS\Backend\Utility\BackendUtility;
 
 class DisableBeuser{
 
-	public function run( $time, $checkNeverLoggedInUser = FALSE ){
+	public function run( $time ){
 		$timestamp = $this->convertToTimeStamp( $time );
 
 		// update alle user
@@ -30,7 +30,8 @@ class DisableBeuser{
 						AND lastLogin <=' . (int)$timestamp
 					. ' AND lastLogin!=0'
 					. ' AND username NOT LIKE "_cli_%"'
-					. BackendUtility::deleteClause( 'be_users' ) . BackendUtility::BEenableFields( 'be_users' );
+					. BackendUtility::deleteClause( 'be_users' )
+					. BackendUtility::BEenableFields( 'be_users' );
 
 		$this->disableUser($normalUser);
 
@@ -43,7 +44,8 @@ class DisableBeuser{
 								AND lastLogin = 0'
 							. ' AND crdate <=' . (int)$timestamp
 							. ' AND username NOT LIKE "_cli_%"'
-							. BackendUtility::deleteClause( 'be_users' ) . BackendUtility::BEenableFields( 'be_users' );
+							. BackendUtility::deleteClause( 'be_users' )
+							. BackendUtility::BEenableFields( 'be_users' );
 
 		$this->disableUser($userNeverLoggedIn);
 
@@ -52,7 +54,7 @@ class DisableBeuser{
 
 	public function convertToTimeStamp( $time ){
 		 $dateTime = new \DateTime();
-		 return $dateTime->modify('-' . $time . 'month')->getTimeStamp();
+		 return $dateTime->modify('-' . $time )->getTimeStamp();
 	}
 
 	public function disableUser( $where ){
