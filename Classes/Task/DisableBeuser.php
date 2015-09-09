@@ -101,7 +101,7 @@ class DisableBeuser{
 			. LF
 			;
 		foreach ($this->disabledUser as $key => $user) {
-					$mailBody .= $user['username'] . LF;
+			$mailBody .= $user['username'] . LF;
 		}
 
 		// Prepare mailer and send the mail

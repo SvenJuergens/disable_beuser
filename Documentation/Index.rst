@@ -5,6 +5,7 @@
 
 .. include:: Includes.txt
 
+
 .. _start:
 
 =============================================================
@@ -23,17 +24,19 @@ Disable BeUser Task
 		en
 
 	:Description:
-		Scheduler task to disable inactive User
+		A Scheduler Task to disable inactive user .
 
 	:Keywords:
-		comma,separated,list,of,keywords
+		Scheduler,Task,beuser
 
 	:Copyright:
 		2015
 
 	:Author:
+		Sven Jürgens
 
 	:Email:
+		t3@blue-side.de
 
 	:License:
 		This document is published under the Open Content License
@@ -45,6 +48,7 @@ Disable BeUser Task
 	The content of this document is related to TYPO3,
 	a GNU/GPL CMS/Framework available from `www.typo3.org <http://www.typo3.org/>`_.
 
+
 	**Table of Contents**
 
 .. toctree::
@@ -53,11 +57,5 @@ Disable BeUser Task
 	:glob:
 
 	Introduction/Index
-	User/Index
-	Administrator/Index
-	Configuration/Index
-	Developer/Index
-	KnownProblems/Index
-	ToDoList/Index
-	ChangeLog/Index
-	Targets
+	UsersManual/Index
+	AdministratorManual/Index

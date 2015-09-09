@@ -6,11 +6,9 @@
 .. include:: ../Includes.txt
 
 
-.. _changelog:
+.. _users-manual:
 
-ChangeLog
-=========
+Users manual
+============
 
-Providing a change log chapter is optional. You can also refer
-users to the ChangeLog file inside the extension or to some repository's
-commit listing.
+There ist no user configuration.
