@@ -13,6 +13,10 @@ Administrator Manual
 
 Target group: **Administrators**
 
+.. note::
+	The task don't disable Administrators and Backend User which start with "_cli_".
+
+
 Installation
 ------------
 
