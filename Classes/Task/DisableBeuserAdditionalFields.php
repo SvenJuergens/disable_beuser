@@ -55,14 +55,14 @@ class DisableBeuserAdditionalFields implements AdditionalFieldProviderInterface{
 		$additionalFields = array();
 		$placeHolderText = $GLOBALS['LANG']->sL('LLL:EXT:disable_beuser/locallang.xml:scheduler.placeholderText');
 		$additionalFields[ $this->fieldNames['time'] ] = array(
-			'code'     => '<input type="text" placeholder="' . $placeHolderText . '" name="tx_scheduler[' . $this->fieldNames['time'] . ']" value="' . $taskInfo[$this->fieldNames['time']] . '" />',
+			'code'     => '<input type="text" class="form-control" placeholder="' . $placeHolderText . '" name="tx_scheduler[' . $this->fieldNames['time'] . ']" value="' . $taskInfo[$this->fieldNames['time']] . '" />',
 			'label'    => $GLOBALS['LANG']->sL('LLL:EXT:disable_beuser/locallang.xml:scheduler.fieldLabel'),
 			'cshKey'   => '_MOD_txdisablebeuser',
 			'cshLabel' => $this->fieldNames['time']
 		);
 
 		$additionalFields[ $this->fieldNames['email'] ] = array(
-			'code'     => '<input type="text" name="tx_scheduler[' . $this->fieldNames['email'] . ']" value="' . $taskInfo[$this->fieldNames['email']] . '" />',
+			'code'     => '<input type="text" class="form-control" name="tx_scheduler[' . $this->fieldNames['email'] . ']" value="' . $taskInfo[$this->fieldNames['email']] . '" />',
 			'label'    => $GLOBALS['LANG']->sL('LLL:EXT:disable_beuser/locallang.xml:scheduler.fieldLabelEmail'),
 			'cshKey'   => '_MOD_txdisablebeuser',
 			'cshLabel' => $this->fieldNames['email']
