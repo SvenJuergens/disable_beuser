@@ -14,10 +14,12 @@ namespace SvenJuergens\DisableBeuser\Task;
  * The TYPO3 project - inspiring people to share!
  */
 
-use \TYPO3\CMS\Backend\Utility\BackendUtility;
-use \TYPO3\CMS\Core\Utility\GeneralUtility;
-use \TYPO3\CMS\Core\Mail\MailMessage;
-use \TYPO3\CMS\Core\Exception;
+use TYPO3\CMS\Backend\Utility\BackendUtility;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Core\Mail\MailMessage;
+use TYPO3\CMS\Core\Exception;
+
+use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 
 class DisableBeuser{
 
@@ -70,7 +72,7 @@ class DisableBeuser{
 		if( !empty($notificationEmail) ){
 			$rows = array();
 			$rows = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
-				'username',
+				'username,lastlogin',
 				'be_users',
 				$where
 			);
@@ -91,18 +93,7 @@ class DisableBeuser{
 			return $success;
 		}
 
-		$mailBody =
-			'Disabled User'
-			. LF
-			. '- - - - - - - - - - - - - - - -'
-			. LF
-			. LF
-			. date('Y-m-d H:i:s', time())
-			. LF
-			;
-		foreach ($this->disabledUser as $key => $user) {
-			$mailBody .= $user['username'] . LF;
-		}
+		$mailBody = $this->getMailBody();
 
 		// Prepare mailer and send the mail
 		try {
@@ -117,5 +108,34 @@ class DisableBeuser{
 			throw new Exception( $e->getMessage() );
 		}
 		return $success;
+	}
+
+	public function getMailBody(){
+
+		$mailBody =
+			'User disabled: ' .  date( $GLOBALS['TYPO3_CONF_VARS']['SYS']['ddmmyy'] . ' ' . $GLOBALS['TYPO3_CONF_VARS']['SYS']['hhmm'] , time())
+			. LF
+			. '- - - - - - - - - - - - - - - -'
+			. LF
+			. LF
+			;
+		foreach ($this->disabledUser as &$user) {
+
+			if( !empty( $user['lastlogin'] ) ){
+				$dateTime = new \DateTime('@' . $user['lastlogin']);
+				$user['lastlogin'] = $dateTime->format(  $GLOBALS['TYPO3_CONF_VARS']['SYS']['ddmmyy'] . ' ' . $GLOBALS['TYPO3_CONF_VARS']['SYS']['hhmm'] );
+			}else{
+				$user['lastlogin'] = $GLOBALS['LANG']->sL('LLL:EXT:beuser/Resources/Private/Language/locallang.xlf:never');
+			}
+
+		}
+		unset($user);
+
+		include_once( ExtensionManagementUtility::extPath('disable_beuser') . 'Resources/Private/Php/array-to-texttable.php' );
+		$ArrayToTextTable = GeneralUtility::makeInstance('ArrayToTextTable', $this->disabledUser);
+		$ArrayToTextTable->showHeaders(TRUE);
+		$mailBody .= $ArrayToTextTable->render(true);
+
+		return $mailBody;
 	}
 }
