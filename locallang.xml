@@ -12,6 +12,7 @@
 			<label index="error.empty">please set a date/time format: http://php.net/manual/de/datetime.formats.php</label>
 			<label index="error.wrongFormat">please set a correct date/time format</label>
 			<label index="error.wrongEmail">please set a correct email address </label>
+			<label index="beuser.donotdisable">Don't disable this User with disable_beuser</label>
 		</languageKey>
 		<languageKey index="de" type="array">
 			<label index="scheduler.placeholderText">z.B. 3 months</label>
@@ -20,6 +21,7 @@
 			<label index="error.empty">Bitte ein Date/Time Format setzen</label>
 			<label index="error.wrongFormat">Bitte setze ein korrektes Date/Time Format: http://php.net/manual/de/datetime.formats.php </label>
 			<label index="error.wrongEmail">Bitte setze eine korrekte E-Mail ein </label>
+			<label index="beuser.donotdisable">Diesen User nicht automatisch deaktiveren (disable_beuser)</label>
 		</languageKey>
 	</data>
 </T3locallang>

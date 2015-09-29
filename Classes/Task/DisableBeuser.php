@@ -35,7 +35,8 @@ class DisableBeuser{
 		// und lastlogin NICHT 0 ist -> die haben sich noch nicht eingeloggt
 		// und nicht mit '_cli' beginnen
 		$normalUser = ' admin=0
-						AND lastLogin <=' . (int)$timestamp
+						AND donotdisable=0'
+					. '	AND lastLogin <=' . (int)$timestamp
 					. ' AND lastLogin!=0'
 					. ' AND username NOT LIKE "_cli_%"'
 					. BackendUtility::deleteClause( 'be_users' )
@@ -50,6 +51,7 @@ class DisableBeuser{
 		// und nicht mit '_cli' beginnen
 		$userNeverLoggedIn = ' 	admin=0
 								AND lastLogin = 0'
+							. ' AND donotdisable=0'
 							. ' AND crdate <=' . (int)$timestamp
 							. ' AND username NOT LIKE "_cli_%"'
 							. BackendUtility::deleteClause( 'be_users' )
@@ -120,14 +122,12 @@ class DisableBeuser{
 			. LF
 			;
 		foreach ($this->disabledUser as &$user) {
-
 			if( !empty( $user['lastlogin'] ) ){
 				$dateTime = new \DateTime('@' . $user['lastlogin']);
 				$user['lastlogin'] = $dateTime->format(  $GLOBALS['TYPO3_CONF_VARS']['SYS']['ddmmyy'] . ' ' . $GLOBALS['TYPO3_CONF_VARS']['SYS']['hhmm'] );
 			}else{
 				$user['lastlogin'] = $GLOBALS['LANG']->sL('LLL:EXT:beuser/Resources/Private/Language/locallang.xlf:never');
 			}
-
 		}
 		unset($user);
 
@@ -135,7 +135,6 @@ class DisableBeuser{
 		$ArrayToTextTable = GeneralUtility::makeInstance('ArrayToTextTable', $this->disabledUser);
 		$ArrayToTextTable->showHeaders(TRUE);
 		$mailBody .= $ArrayToTextTable->render(true);
-
 		return $mailBody;
 	}
 }
