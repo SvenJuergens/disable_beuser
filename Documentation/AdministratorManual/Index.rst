@@ -14,13 +14,29 @@ Administrator Manual
 Target group: **Administrators**
 
 .. note::
-	The task don't disable Administrators and Backend User which start with "_cli_".
+	The task don't disable Administrators, Backend User which start with "_cli_" and excluded User.
 
 
 Installation
 ------------
 
 Just install with Extension Manager and create a new scheduler task "Disable Beuser".
+
+Now you have the possibilty to exclude single User From this Task
+
+.. figure:: ../Images/AdministratorManual/exclude-user.png
+	:width: 500px
+	:alt: Screenshot of Backend User
+
+
+
+Optional:
+You can set an individual HTML E-Mail Template in ExtensionManager Configuration
+
+.. figure:: ../Images/AdministratorManual/set-emailtemplate.png
+	:width: 500px
+	:alt: Screenshot of Extensionmanager Configuration
+
 
 
 Configuration

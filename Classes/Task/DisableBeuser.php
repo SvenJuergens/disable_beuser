@@ -18,7 +18,7 @@ use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Mail\MailMessage;
 use TYPO3\CMS\Core\Exception;
-
+use TYPO3\CMS\Fluid\View\StandaloneView;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 
 class DisableBeuser{
@@ -102,7 +102,7 @@ class DisableBeuser{
 			$mailer = GeneralUtility::makeInstance( MailMessage::class );
 			$mailer->setFrom( $notificationEmail );
 			$mailer->setSubject('SCHEDULER-Task DisableBeuser:' . $GLOBALS['TYPO3_CONF_VARS']['SYS']['sitename'] );
-			$mailer->setBody( $mailBody );
+			$mailer->setBody( $mailBody, 'text/html');
 			$mailer->setTo( $notificationEmail );
 			$mailsSend = $mailer->send();
 			$success = $mailsSend > 0;
@@ -114,27 +114,23 @@ class DisableBeuser{
 
 	public function getMailBody(){
 
-		$mailBody =
-			'User disabled: ' .  date( $GLOBALS['TYPO3_CONF_VARS']['SYS']['ddmmyy'] . ' ' . $GLOBALS['TYPO3_CONF_VARS']['SYS']['hhmm'] , time())
-			. LF
-			. '- - - - - - - - - - - - - - - -'
-			. LF
-			. LF
-			;
-		foreach ($this->disabledUser as &$user) {
-			if( !empty( $user['lastlogin'] ) ){
-				$dateTime = new \DateTime('@' . $user['lastlogin']);
-				$user['lastlogin'] = $dateTime->format(  $GLOBALS['TYPO3_CONF_VARS']['SYS']['ddmmyy'] . ' ' . $GLOBALS['TYPO3_CONF_VARS']['SYS']['hhmm'] );
-			}else{
-				$user['lastlogin'] = $GLOBALS['LANG']->sL('LLL:EXT:beuser/Resources/Private/Language/locallang.xlf:never');
-			}
-		}
-		unset($user);
+		$extensionConfig = array();
+		$extensionConfig = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['disable_beuser']);
 
-		include_once( ExtensionManagementUtility::extPath('disable_beuser') . 'Resources/Private/Php/array-to-texttable.php' );
-		$ArrayToTextTable = GeneralUtility::makeInstance('ArrayToTextTable', $this->disabledUser);
-		$ArrayToTextTable->showHeaders(TRUE);
-		$mailBody .= $ArrayToTextTable->render(true);
-		return $mailBody;
+		if( empty($extensionConfig) ){
+			$extensionConfig['templatePath'] = 'EXT:disable_beuser/Resources/Private/Templates/emailTemplate.html';
+		}
+
+		$templateFile = GeneralUtility::getFileAbsFileName( $extensionConfig['templatePath'] );
+		$view = GeneralUtility::makeInstance( StandaloneView::class );
+		$view->setTemplatePathAndFilename( $templateFile );
+
+
+		$view->assignMultiple( array(
+			'disabledUser' => $this->disabledUser,
+		));
+
+		return $view->render();
+
 	}
 }

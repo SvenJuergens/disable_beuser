@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+</head>
+<body>
+	<h1><f:translate key="LLL:EXT:disable_beuser/locallang.xml:email.disableduser"/></h1>
+	<table>
+		<thead align="left">
+			<tr>
+				<th><f:translate key="LLL:EXT:disable_beuser/locallang.xml:email.username"/></th>
+				<th><f:translate key="LLL:EXT:disable_beuser/locallang.xml:email.lastlogin"/></th>
+			</tr>
+		</thead>
+		<tbody>
+			<f:for each="{disabledUser}" as="beuser" >
+				<tr>
+					<td>{beuser.username}</td>
+					<td>
+						<f:if condition="{beuser.lastlogin}">
+							<f:then><f:format.date format="d.m.Y - H:i">@{beuser.lastlogin}</f:format.date></f:then>
+							<f:else><f:translate key="LLL:EXT:beuser/Resources/Private/Language/locallang.xlf:never"/></f:else>
+						</f:if>
+					</td>
+				</tr>
+			</f:for>
+		</tbody>
+	</table>
+</body>
+</html>
