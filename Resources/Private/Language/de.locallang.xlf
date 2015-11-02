@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<xliff version="1.0">
+	<file source-language="en" target-language="de" datatype="plaintext" original="messages" date="2015-11-02T20:33:47Z" product-name="">
+		<header/>
+		<body>
+			<trans-unit id="scheduler.placeholderText" xml:space="preserve" approved="yes">
+				<source>e.g. 3 months</source>
+				<target>z.B. 3 months</target>
+			</trans-unit>
+			<trans-unit id="scheduler.fieldLabel" xml:space="preserve" approved="yes">
+				<source>Time of Inactivity to disable Beuser</source>
+				<target>Zeitspanne nach der Benutzer deaktiviert werden sollen</target>
+			</trans-unit>
+			<trans-unit id="scheduler.fieldLabelEmail" xml:space="preserve" approved="yes">
+				<source>Notification Email (optional) </source>
+				<target>E-Mail für Benachrichtigung (optional)</target>
+			</trans-unit>
+			<trans-unit id="error.empty" xml:space="preserve" approved="yes">
+				<source>please set a date/time format: http://php.net/manual/de/datetime.formats.php</source>
+				<target>Bitte ein Date/Time Format setzen</target>
+			</trans-unit>
+			<trans-unit id="error.wrongFormat" xml:space="preserve" approved="yes">
+				<source>please set a correct date/time format</source>
+				<target>Bitte setze ein korrektes Date/Time Format: http://php.net/manual/de/datetime.formats.php </target>
+			</trans-unit>
+			<trans-unit id="error.wrongEmail" xml:space="preserve" approved="yes">
+				<source>please set a correct email address </source>
+				<target>Bitte setze eine korrekte E-Mail ein </target>
+			</trans-unit>
+			<trans-unit id="beuser.donotdisable" xml:space="preserve" approved="yes">
+				<source>Don't disable this User with disable_beuser</source>
+				<target>Diesen User nicht automatisch deaktiveren (disable_beuser)</target>
+			</trans-unit>
+			<trans-unit id="email.disableduser" xml:space="preserve" approved="yes">
+				<source>Disabled User</source>
+				<target>Folgende Benuter wurden deaktiviert</target>
+			</trans-unit>
+			<trans-unit id="email.username" xml:space="preserve" approved="yes">
+				<source>Username</source>
+				<target>Benutzername</target>
+			</trans-unit>
+			<trans-unit id="email.lastlogin" xml:space="preserve" approved="yes">
+				<source>Last Login</source>
+				<target>letzter Login</target>
+			</trans-unit>
+		</body>
+	</file>
+</xliff>

@@ -11,25 +11,25 @@
  ***************************************************************/
 
 $EM_CONF[$_EXTKEY] = array(
-	'title' => 'Disable BeUser Task',
-	'description' => 'Scheduler task to disable inactive User',
-	'category' => 'plugin',
-	'author' => 'Sven Juergens',
-	'author_email' => 't3@blue-side.de',
-	'state' => 'beta',
-	'internal' => '',
-	'uploadfolder' => '0',
-	'createDirs' => '',
-	'clearCacheOnLoad' => 0,
-	'version' => '1.1.0',
-	'constraints' => array(
-		'depends' => array(
-			'typo3' => '6.2.0-7.5.99',
-			'php' => '5.5.0-5.999.999',
-		),
-		'conflicts' => array(
-		),
-		'suggests' => array(
-		),
-	),
+    'title' => 'Disable BeUser Task',
+    'description' => 'Scheduler task to disable inactive User',
+    'category' => 'plugin',
+    'author' => 'Sven Juergens',
+    'author_email' => 't3@blue-side.de',
+    'state' => 'beta',
+    'internal' => '',
+    'uploadfolder' => '0',
+    'createDirs' => '',
+    'clearCacheOnLoad' => 0,
+    'version' => '1.1.1',
+    'constraints' => array(
+        'depends' => array(
+            'typo3' => '6.2.0-7.6.99',
+            'php' => '5.5.0-5.999.999',
+        ),
+        'conflicts' => array(
+        ),
+        'suggests' => array(
+        ),
+    ),
 );

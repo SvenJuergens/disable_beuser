@@ -14,68 +14,71 @@ namespace SvenJuergens\DisableBeuser\Task;
  * The TYPO3 project - inspiring people to share!
  */
 
-use \TYPO3\CMS\Scheduler\Task\AbstractTask;
-use \TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Scheduler\Task\AbstractTask;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-class DisableBeuserTask extends AbstractTask {
-
-	/**
-	 * Date/Time Format
-	 *
-	 * @var string
-	 */
-	protected $timeOfInactivityToDisable = NULL;
-
-
-	protected $notificationEmail = NULL;
+class DisableBeuserTask extends AbstractTask
+{
+    /**
+     * Date/Time Format
+     *
+     * @var string
+     */
+    protected $timeOfInactivityToDisable = null;
 
 
-	public function execute() {
-		$returnValue = FALSE;
-		$Logic = GeneralUtility::makeInstance(DisableBeuser::class);
-		$returnValue = $Logic->run( $this->getTimeOfInactivityToDisable(), $this->getNotificationEmail() );
-		return $returnValue;
-	}
-
-	/**
-	 * Get the saved Date/Time Format
-	 *
-	 * @return string Comma-Separated Lists with uids to Exclude.
-	 */
-	public function getTimeOfInactivityToDisable() {
-		return $this->timeOfInactivityToDisable;
-	}
-
-	/**
-	 * Sets the Date/Time Format.
-	 *
-	 * @param string $timeOfInactivityToDisable Date/Time Format.
-	 * @return void
-	 */
-	public function setTimeOfInactivityToDisable( $timeOfInactivityToDisable ) {
-		$this->timeOfInactivityToDisable = $timeOfInactivityToDisable;
-	}
+    protected $notificationEmail = null;
 
 
+    public function execute()
+    {
+        $returnValue = false;
+        $Logic = GeneralUtility::makeInstance(DisableBeuser::class);
+        $returnValue = $Logic->run($this->getTimeOfInactivityToDisable(), $this->getNotificationEmail());
+        return $returnValue;
+    }
 
-	/**
-	 * Get E-Mail Adress
-	 *
-	 * @return string
-	 */
-	public function getNotificationEmail() {
-		return $this->notificationEmail;
-	}
+    /**
+     * Get the saved Date/Time Format
+     *
+     * @return string Comma-Separated Lists with uids to Exclude.
+     */
+    public function getTimeOfInactivityToDisable()
+    {
+        return $this->timeOfInactivityToDisable;
+    }
 
-	/**
-	 * Set E-Mail Adress
-	 *
-	 * @param string $email E-Mail Adress
-	 * @return void
-	 */
-	public function setNotificationEmail( $email ) {
-		$this->notificationEmail = $email;
-	}
+    /**
+     * Sets the Date/Time Format.
+     *
+     * @param string $timeOfInactivityToDisable Date/Time Format.
+     * @return void
+     */
+    public function setTimeOfInactivityToDisable($timeOfInactivityToDisable)
+    {
+        $this->timeOfInactivityToDisable = $timeOfInactivityToDisable;
+    }
 
 
+
+    /**
+     * Get E-Mail Adress
+     *
+     * @return string
+     */
+    public function getNotificationEmail()
+    {
+        return $this->notificationEmail;
+    }
+
+    /**
+     * Set E-Mail Adress
+     *
+     * @param string $email E-Mail Adress
+     * @return void
+     */
+    public function setNotificationEmail($email)
+    {
+        $this->notificationEmail = $email;
+    }
 }

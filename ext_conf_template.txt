@@ -1,2 +1,2 @@
-# cat=basic; type=string; label=LLL:EXT:disable_beuser/locallang.xml:email.templatePath
+# cat=basic; type=string; label=LLL:EXT:disable_beuser/Resources/Private/Language/locallang.xlf:email.templatePath
 templatePath = EXT:disable_beuser/Resources/Private/Templates/emailTemplate.html
