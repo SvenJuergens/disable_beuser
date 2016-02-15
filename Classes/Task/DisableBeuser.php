@@ -24,44 +24,65 @@ class DisableBeuser
 {
     protected $disabledUser = array();
 
+    protected $sendNotificationEmail = false;
+
     public function run($time, $notificationEmail)
     {
         $returnValue = true;
         $timestamp = $this->convertToTimeStamp($time);
+        $this->sendNotificationEmail = empty($notificationEmail);
+
         // update alle user
         // welche NICHT Administratoren sind
         // und einen lastlogin kleiner/gleich $timestamp haben
         // und lastlogin NICHT 0 ist -> die haben sich noch nicht eingeloggt
         // und nicht mit '_cli' beginnen
         $normalUser = ' admin=0
-						AND donotdisable=0'
-                    . '	AND lastLogin <=' . (int)$timestamp
+                        AND donotdisable=0'
+                    . ' AND lastLogin <=' . (int)$timestamp
                     . ' AND lastLogin!=0'
                     . ' AND username NOT LIKE "_cli_%"'
                     . BackendUtility::deleteClause('be_users')
                     . BackendUtility::BEenableFields('be_users');
 
-        $this->disableUser($normalUser, $notificationEmail);
+        $this->disableUser($normalUser);
 
         // update alle user
         // welche NICHT Administratoren sind
         // und einen lastlogin GLEICH 0 haben -> die haben sich noch nicht eingeloggt
         // UND ein Erstellungsdatum kleiner/gleich $timestamp haben
         // und nicht mit '_cli' beginnen
-        $userNeverLoggedIn = ' 	admin=0
-								AND lastLogin = 0'
+        $userNeverLoggedIn = '  admin=0
+                                AND lastLogin = 0'
                             . ' AND donotdisable=0'
                             . ' AND crdate <=' . (int)$timestamp
                             . ' AND username NOT LIKE "_cli_%"'
                             . BackendUtility::deleteClause('be_users')
                             . BackendUtility::BEenableFields('be_users');
 
-        $this->disableUser($userNeverLoggedIn, $notificationEmail);
+        $this->disableUser($userNeverLoggedIn);
 
-        if (!empty($notificationEmail) && !empty($this->disabledUser)) {
-            $returnValue = $this->sendEmail($notificationEmail);
+        return $this->manageMailTransport($notificationEmail);
+    }
+
+    public function manageMailTransport($notificationEmail)
+    {
+          $returnValue = false;
+        //keine E-mail hinterlegt oder kein Ergebnis
+        if ($this->sendNotificationEmail === false || empty($this->disabledUser)) {
+            return true;
+        }
+
+        $emails = GeneralUtility::trimExplode(';', $notificationEmail, true);
+
+        foreach ($emails as $key => $email) {
+            $returnValue = $this->sendEmail($email);
+            if($returnValue === false){
+                break;
+            }
         }
         return $returnValue;
+
     }
 
     public function convertToTimeStamp($time)
@@ -70,9 +91,9 @@ class DisableBeuser
         return $dateTime->modify('-' . $time)->getTimeStamp();
     }
 
-    public function disableUser($where, $notificationEmail)
+    public function disableUser($where)
     {
-        if (!empty($notificationEmail)) {
+        if ($this->sendNotificationEmail === true){
             $rows = array();
             $rows = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
                 'username,lastlogin',
@@ -127,9 +148,7 @@ class DisableBeuser
         $view->setTemplatePathAndFilename($templateFile);
 
 
-        $view->assignMultiple(array(
-            'disabledUser' => $this->disabledUser,
-        ));
+        $view->assign('disabledUser', $this->disabledUser);
 
         return $view->render();
     }
