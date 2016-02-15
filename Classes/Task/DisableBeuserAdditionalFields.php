@@ -101,12 +101,23 @@ class DisableBeuserAdditionalFields implements AdditionalFieldProviderInterface
             $validInput = false;
         }
 
-        if (!empty($submittedData[ $this->fieldNames['email']]) && !GeneralUtility::validEmail($submittedData[ $this->fieldNames['email'] ])) {
-            $schedulerModule->addMessage(
-                    $GLOBALS['LANG']->sL($this->languageFile . 'error.wrongEmail'),
-                    FlashMessage::ERROR
-                );
-            $validInput = false;
+        if ( !empty($submittedData[ $this->fieldNames['email'] ]) ){
+                $emails = GeneralUtility::trimExplode(';', $submittedData[ $this->fieldNames['email'] ], true);
+
+                foreach ($emails as $key => $email) {
+
+                    if( !GeneralUtility::validEmail( $email ) ) {
+                        $schedulerModule->addMessage(
+                            $GLOBALS['LANG']->sL($this->languageFile . 'error.wrongEmail'),
+                            FlashMessage::ERROR
+                        );
+                        $validInput = false;
+                        break;
+                    }
+                }
+
+
+
         }
 
         return $validInput;

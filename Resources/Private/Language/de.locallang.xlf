@@ -33,7 +33,7 @@
 			</trans-unit>
 			<trans-unit id="email.disableduser" xml:space="preserve" approved="yes">
 				<source>Disabled User</source>
-				<target>Folgende Benuter wurden deaktiviert</target>
+				<target>Folgende Benutzer wurden deaktiviert</target>
 			</trans-unit>
 			<trans-unit id="email.username" xml:space="preserve" approved="yes">
 				<source>Username</source>

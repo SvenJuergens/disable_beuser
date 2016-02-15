@@ -30,7 +30,7 @@ class DisableBeuser
     {
         $returnValue = true;
         $timestamp = $this->convertToTimeStamp($time);
-        $this->sendNotificationEmail = empty($notificationEmail);
+        $this->sendNotificationEmail = !empty($notificationEmail);
 
         // update alle user
         // welche NICHT Administratoren sind
@@ -67,7 +67,7 @@ class DisableBeuser
 
     public function manageMailTransport($notificationEmail)
     {
-          $returnValue = false;
+        $returnValue = false;
         //keine E-mail hinterlegt oder kein Ergebnis
         if ($this->sendNotificationEmail === false || empty($this->disabledUser)) {
             return true;
@@ -77,6 +77,7 @@ class DisableBeuser
 
         foreach ($emails as $key => $email) {
             $returnValue = $this->sendEmail($email);
+
             if($returnValue === false){
                 break;
             }
@@ -103,11 +104,11 @@ class DisableBeuser
             $this->disabledUser = array_merge($this->disabledUser, $rows);
         }
 
-        $GLOBALS['TYPO3_DB']->exec_UPDATEquery(
-            'be_users',
-            $where,
-            array('disable' => '1')
-        );
+         $GLOBALS['TYPO3_DB']->exec_UPDATEquery(
+             'be_users',
+             $where,
+             array('disable' => '1')
+         );
     }
 
     public function sendEmail($notificationEmail)
