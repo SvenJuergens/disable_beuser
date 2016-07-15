@@ -14,11 +14,10 @@ namespace SvenJuergens\DisableBeuser\Task;
  * The TYPO3 project - inspiring people to share!
  */
 
+use SvenJuergens\Utility\SendMailUtility;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Core\Mail\MailMessage;
-use TYPO3\CMS\Core\Exception;
-use TYPO3\CMS\Fluid\View\StandaloneView;
+
 
 class DisableBeuser
 {
@@ -61,37 +60,27 @@ class DisableBeuser
                             . BackendUtility::BEenableFields('be_users');
 
         $this->disableUser($userNeverLoggedIn);
-
         return $this->manageMailTransport($notificationEmail);
     }
 
-    public function manageMailTransport($notificationEmail)
-    {
-        $returnValue = false;
-        //keine E-mail hinterlegt oder kein Ergebnis
-        if ($this->sendNotificationEmail === false || empty($this->disabledUser)) {
-            return true;
-        }
 
-        $emails = GeneralUtility::trimExplode(';', $notificationEmail, true);
-
-        foreach ($emails as $key => $email) {
-            $returnValue = $this->sendEmail($email);
-
-            if($returnValue === false){
-                break;
-            }
-        }
-        return $returnValue;
-
-    }
-
+    /**
+     * returns a timestamp
+     *
+     * @param $time
+     * @return int
+     */
     public function convertToTimeStamp($time)
     {
         $dateTime = new \DateTime();
         return $dateTime->modify('-' . $time)->getTimeStamp();
     }
 
+    /**
+     * Updates BeUser
+     *
+     * @param $where
+     */
     public function disableUser($where)
     {
         if ($this->sendNotificationEmail === true){
@@ -111,46 +100,27 @@ class DisableBeuser
          );
     }
 
-    public function sendEmail($notificationEmail)
+    /**
+     * Checks if it's necessary to send a notification Mail
+     *
+     * @param $notificationEmail E-Mail(s) to inform about User
+     * @return bool
+     */
+    public function manageMailTransport($notificationEmail)
     {
-        $success = false;
-        if (!GeneralUtility::validEmail($notificationEmail)) {
-            return $success;
+        $returnValue = false;
+        if ($this->sendNotificationEmail === false || empty($this->disabledUser)) {
+            return true;
         }
 
-        $mailBody = $this->getMailBody();
+        $emails = GeneralUtility::trimExplode(';', $notificationEmail, true);
 
-        // Prepare mailer and send the mail
-        try {
-            $mailer = GeneralUtility::makeInstance(MailMessage::class);
-            $mailer->setFrom($notificationEmail);
-            $mailer->setSubject('SCHEDULER-Task DisableBeuser:' . $GLOBALS['TYPO3_CONF_VARS']['SYS']['sitename']);
-            $mailer->setBody($mailBody, 'text/html');
-            $mailer->setTo($notificationEmail);
-            $mailsSend = $mailer->send();
-            $success = $mailsSend > 0;
-        } catch (Exception $e) {
-            throw new Exception($e->getMessage());
+        foreach ($emails as $key => $email) {
+            $returnValue = SendMailUtility::sendEmail($email, $this->disabledUser);
+            if($returnValue === false){
+                break;
+            }
         }
-        return $success;
-    }
-
-    public function getMailBody()
-    {
-        $extensionConfig = array();
-        $extensionConfig = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['disable_beuser']);
-
-        if (empty($extensionConfig)) {
-            $extensionConfig['templatePath'] = 'EXT:disable_beuser/Resources/Private/Templates/emailTemplate.html';
-        }
-
-        $templateFile = GeneralUtility::getFileAbsFileName($extensionConfig['templatePath']);
-        $view = GeneralUtility::makeInstance(StandaloneView::class);
-        $view->setTemplatePathAndFilename($templateFile);
-
-
-        $view->assign('disabledUser', $this->disabledUser);
-
-        return $view->render();
+        return $returnValue;
     }
 }
