@@ -43,7 +43,7 @@
 				<source>You can use ";" for setting more mails in this field
 					e.g. test@example.com; example@example.com; abc@example.com
 				</source>
-				<target>Du kannst ";" nutzen im mehrere E-Mail Empfänger zu hinterlegen
+				<target>Du kannst ";" nutzen um mehrere E-Mail Empfänger zu hinterlegen
 					z.B. test@example.com; example@example.com; abc@example.com
 				</target>
 			</trans-unit>

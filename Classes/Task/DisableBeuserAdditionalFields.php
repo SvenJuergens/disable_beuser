@@ -63,7 +63,7 @@ class DisableBeuserAdditionalFields implements AdditionalFieldProviderInterface
         );
 
         $additionalFields[$this->fieldNames['email']] = array(
-            'code' => '<input type="text" class="form-control" name="tx_scheduler[' . $this->fieldNames['email'] . ']" value="' . $taskInfo[$this->fieldNames['email']] . '" />',
+            'code' => '<input type="text" class="form-control" placeholder="example@example.org; test@example.com" name="tx_scheduler[' . $this->fieldNames['email'] . ']" value="' . $taskInfo[$this->fieldNames['email']] . '" />',
             'label' => $GLOBALS['LANG']->sL($this->languageFile . 'scheduler.fieldLabelEmail'),
             'cshKey' => '_MOD_txdisablebeuser',
             'cshLabel' => $this->fieldNames['email']

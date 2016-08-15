@@ -80,6 +80,7 @@ The scheduler task create a Datetime Object and subtract the time span from "now
 **Input field: "Notification Email (optional) "**
 
 If you set an email address you get the date and a list with disabled user from the task.
+(Separate Mails with ";" )
 
 
 .. figure:: ../Images/AdministratorManual/disable-beuser-task.png
