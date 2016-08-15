@@ -29,6 +29,24 @@
 						1 year
 				</target>
 			</trans-unit>
+
+			<!-- -->
+			<trans-unit id="disablebeuser_email.alttitle" xml:space="preserve">
+				<source>Notification Email</source>
+				<target>E-Mail für Benachrichtigung</target>
+			</trans-unit>
+			<trans-unit id="disablebeuser_email.description" xml:space="preserve">
+				<source>This mails get the notification emails about disabled users</source>
+				<target>Diese E-Mails bekommen die Benachrichtigungen</target>
+			</trans-unit>
+			<trans-unit id="disablebeuser_email.details" xml:space="preserve">
+				<source>You can use ";" for setting more mails in this field
+					e.g. test@example.com; example@example.com; abc@example.com
+				</source>
+				<target>Du kannst ";" nutzen im mehrere E-Mail Empfänger zu hinterlegen
+					z.B. test@example.com; example@example.com; abc@example.com
+				</target>
+			</trans-unit>
 		</body>
 	</file>
 </xliff>

@@ -60,9 +60,8 @@ class DisableBeuserTask extends AbstractTask
     }
 
 
-
     /**
-     * Get E-Mail Adress
+     * Get E-Mail Address
      *
      * @return string
      */
@@ -72,9 +71,9 @@ class DisableBeuserTask extends AbstractTask
     }
 
     /**
-     * Set E-Mail Adress
+     * Set E-Mail Address
      *
-     * @param string $email E-Mail Adress
+     * @param string $email E-Mail Address
      * @return void
      */
     public function setNotificationEmail($email)

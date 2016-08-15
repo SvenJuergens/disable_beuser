@@ -83,7 +83,7 @@ class DisableBeuser
      */
     public function disableUser($where)
     {
-        if ($this->sendNotificationEmail === true){
+        if ($this->sendNotificationEmail === true) {
             $rows = array();
             $rows = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
                 'username,lastlogin',
@@ -93,11 +93,11 @@ class DisableBeuser
             $this->disabledUser = array_merge($this->disabledUser, $rows);
         }
 
-         $GLOBALS['TYPO3_DB']->exec_UPDATEquery(
-             'be_users',
-             $where,
-             array('disable' => '1')
-         );
+        $GLOBALS['TYPO3_DB']->exec_UPDATEquery(
+            'be_users',
+            $where,
+            array('disable' => '1')
+        );
     }
 
     /**
@@ -117,7 +117,7 @@ class DisableBeuser
 
         foreach ($emails as $key => $email) {
             $returnValue = SendMailUtility::sendEmail($email, $this->disabledUser);
-            if($returnValue === false){
+            if ($returnValue === false) {
                 break;
             }
         }

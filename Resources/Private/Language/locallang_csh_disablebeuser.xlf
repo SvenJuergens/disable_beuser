@@ -20,6 +20,18 @@
 						]]>
 				</source>
 			</trans-unit>
+
+			<!-- -->
+			<trans-unit id="disablebeuser_email.alttitle" xml:space="preserve">
+				<source>Notification Email</source>
+			</trans-unit>
+			<trans-unit id="disablebeuser_email.description" xml:space="preserve">
+				<source>This mails get the notification emails about disabled users</source>
+			</trans-unit>
+			<trans-unit id="disablebeuser_email.details" xml:space="preserve">
+				<source>You can use ";" for setting more mails in this field
+				</source>
+			</trans-unit>
 		</body>
 	</file>
 </xliff>

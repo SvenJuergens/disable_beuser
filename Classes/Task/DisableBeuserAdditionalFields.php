@@ -33,7 +33,7 @@ class DisableBeuserAdditionalFields implements AdditionalFieldProviderInterface
      */
     protected $fieldNames = array(
         'time' => 'disablebeuser_timeOfInactivityToDisable',
-        'email' =>'disablebeuser_email',
+        'email' => 'disablebeuser_email',
     );
 
     protected $languageFile = 'LLL:EXT:disable_beuser/Resources/Private/Language/locallang.xlf:';
@@ -55,17 +55,17 @@ class DisableBeuserAdditionalFields implements AdditionalFieldProviderInterface
 
         $additionalFields = array();
         $placeHolderText = $GLOBALS['LANG']->sL($this->languageFile . 'scheduler.placeholderText');
-        $additionalFields[ $this->fieldNames['time'] ] = array(
-            'code'     => '<input type="text" class="form-control" placeholder="' . $placeHolderText . '" name="tx_scheduler[' . $this->fieldNames['time'] . ']" value="' . $taskInfo[$this->fieldNames['time']] . '" />',
-            'label'    => $GLOBALS['LANG']->sL($this->languageFile . 'scheduler.fieldLabel'),
-            'cshKey'   => '_MOD_txdisablebeuser',
+        $additionalFields[$this->fieldNames['time']] = array(
+            'code' => '<input type="text" class="form-control" placeholder="' . $placeHolderText . '" name="tx_scheduler[' . $this->fieldNames['time'] . ']" value="' . $taskInfo[$this->fieldNames['time']] . '" />',
+            'label' => $GLOBALS['LANG']->sL($this->languageFile . 'scheduler.fieldLabel'),
+            'cshKey' => '_MOD_txdisablebeuser',
             'cshLabel' => $this->fieldNames['time']
         );
 
-        $additionalFields[ $this->fieldNames['email'] ] = array(
-            'code'     => '<input type="text" class="form-control" name="tx_scheduler[' . $this->fieldNames['email'] . ']" value="' . $taskInfo[$this->fieldNames['email']] . '" />',
-            'label'    => $GLOBALS['LANG']->sL($this->languageFile . 'scheduler.fieldLabelEmail'),
-            'cshKey'   => '_MOD_txdisablebeuser',
+        $additionalFields[$this->fieldNames['email']] = array(
+            'code' => '<input type="text" class="form-control" name="tx_scheduler[' . $this->fieldNames['email'] . ']" value="' . $taskInfo[$this->fieldNames['email']] . '" />',
+            'label' => $GLOBALS['LANG']->sL($this->languageFile . 'scheduler.fieldLabelEmail'),
+            'cshKey' => '_MOD_txdisablebeuser',
             'cshLabel' => $this->fieldNames['email']
         );
 
@@ -101,23 +101,20 @@ class DisableBeuserAdditionalFields implements AdditionalFieldProviderInterface
             $validInput = false;
         }
 
-        if ( !empty($submittedData[ $this->fieldNames['email'] ]) ){
-                $emails = GeneralUtility::trimExplode(';', $submittedData[ $this->fieldNames['email'] ], true);
+        if (!empty($submittedData[$this->fieldNames['email']])) {
+            $emails = GeneralUtility::trimExplode(';', $submittedData[$this->fieldNames['email']], true);
 
-                foreach ($emails as $key => $email) {
+            foreach ($emails as $key => $email) {
 
-                    if( !GeneralUtility::validEmail( $email ) ) {
-                        $schedulerModule->addMessage(
-                            $GLOBALS['LANG']->sL($this->languageFile . 'error.wrongEmail'),
-                            FlashMessage::ERROR
-                        );
-                        $validInput = false;
-                        break;
-                    }
+                if (!GeneralUtility::validEmail($email)) {
+                    $schedulerModule->addMessage(
+                        $GLOBALS['LANG']->sL($this->languageFile . 'error.wrongEmail'),
+                        FlashMessage::ERROR
+                    );
+                    $validInput = false;
+                    break;
                 }
-
-
-
+            }
         }
 
         return $validInput;
@@ -136,6 +133,6 @@ class DisableBeuserAdditionalFields implements AdditionalFieldProviderInterface
             throw new \InvalidArgumentException('Expected a task of type SvenJuergens\\DisableBeuser\\Task\\DisableBeuserTask, but got ' . get_class($task), 1295012802);
         }
         $task->setTimeOfInactivityToDisable(htmlspecialchars($submittedData[$this->fieldNames['time']]));
-        $task->setNotificationEmail($submittedData[ $this->fieldNames['email'] ]);
+        $task->setNotificationEmail($submittedData[$this->fieldNames['email']]);
     }
 }
