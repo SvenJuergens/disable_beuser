@@ -14,7 +14,7 @@ namespace SvenJuergens\DisableBeuser\Task;
  * The TYPO3 project - inspiring people to share!
  */
 
-use SvenJuergens\Utility\SendMailUtility;
+use SvenJuergens\DisableBeuser\Utility\SendMailUtility;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 

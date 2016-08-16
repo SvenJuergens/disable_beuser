@@ -1,5 +1,5 @@
 <?php
-namespace SvenJuergens\Utility;
+namespace SvenJuergens\DisableBeuser\Utility;
 
 /**
  * This file is part of the TYPO3 CMS project.
