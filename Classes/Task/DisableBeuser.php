@@ -25,8 +25,11 @@ class DisableBeuser
 
     protected $sendNotificationEmail = false;
 
-    public function run($time, $notificationEmail)
+    protected $isTestRunner = false;
+
+    public function run($time, $notificationEmail, $testRunner)
     {
+        $this->isTestRunner = $testRunner;
         $returnValue = true;
         $timestamp = $this->convertToTimeStamp($time);
         $this->sendNotificationEmail = !empty($notificationEmail);
@@ -93,11 +96,13 @@ class DisableBeuser
             $this->disabledUser = array_merge($this->disabledUser, $rows);
         }
 
-        $GLOBALS['TYPO3_DB']->exec_UPDATEquery(
-            'be_users',
-            $where,
-            array('disable' => '1')
-        );
+        if($this->isTestRunner === false){
+            $GLOBALS['TYPO3_DB']->exec_UPDATEquery(
+                'be_users',
+                $where,
+                array('disable' => '1')
+            );
+        }
     }
 
     /**

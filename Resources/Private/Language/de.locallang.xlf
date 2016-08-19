@@ -15,6 +15,10 @@
 				<source>Notification Email (optional) </source>
 				<target>E-Mail für Benachrichtigung (optional)</target>
 			</trans-unit>
+				<trans-unit id="scheduler.fieldLabelTestRunner" xml:space="preserve">
+				<source>TestRunner (optional)</source>
+				<target>TestRunner (optional)</target>
+			</trans-unit>
 			<trans-unit id="error.empty" xml:space="preserve" approved="yes">
 				<source>please set a date/time format: http://php.net/manual/de/datetime.formats.php</source>
 				<target>Bitte ein Date/Time Format setzen</target>

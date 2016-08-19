@@ -47,6 +47,23 @@
 					z.B. test@example.com; example@example.com; abc@example.com
 				</target>
 			</trans-unit>
+
+			<trans-unit id="disablebeuser_testrunner.alttitle" xml:space="preserve">
+				<source>Testrunner</source>
+				<target>Testlauf</target>
+			</trans-unit>
+			<trans-unit id="disablebeuser_testrunner.description" xml:space="preserve">
+				<source>if checked no changes to the users are made</source>
+				<target>Wenn aktiviert werden keine User-Datensätze geändert.</target>
+			</trans-unit>
+			<trans-unit id="disablebeuser_testrunner.details" xml:space="preserve">
+				<source>If checked no changes to the users are made.
+					This only made sense with an Email Notification.
+				</source>
+				<target>Wenn aktiviert werden keine User-Datensätze geändert.
+					Macht nur Sinn mit der E-Mail Benachrichtigung um die Configuration zu prüfen.
+				</target>
+			</trans-unit>
 		</body>
 	</file>
 </xliff>

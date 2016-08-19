@@ -12,6 +12,9 @@
 			<trans-unit id="scheduler.fieldLabelEmail" xml:space="preserve">
 				<source>Notification Email (optional) </source>
 			</trans-unit>
+			<trans-unit id="scheduler.fieldLabelTestRunner" xml:space="preserve">
+				<source>TestRunner (optional)</source>
+			</trans-unit>
 			<trans-unit id="error.empty" xml:space="preserve">
 				<source>please set a date/time format: http://php.net/manual/de/datetime.formats.php</source>
 			</trans-unit>

@@ -32,6 +32,19 @@
 				<source>You can use ";" for setting more mails in this field
 				</source>
 			</trans-unit>
+
+			<!-- -->
+			<trans-unit id="disablebeuser_testrunner.alttitle" xml:space="preserve">
+				<source>Testrunner</source>
+			</trans-unit>
+			<trans-unit id="disablebeuser_testrunner.description" xml:space="preserve">
+				<source>if checked no changes to the users are made</source>
+			</trans-unit>
+			<trans-unit id="disablebeuser_testrunner.details" xml:space="preserve">
+				<source>If checked no changes to the users are made.
+					This only made sense with an Email Notification.
+				</source>
+			</trans-unit>
 		</body>
 	</file>
 </xliff>
