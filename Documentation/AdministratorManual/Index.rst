@@ -88,3 +88,7 @@ If you set an email address you get the date and a list with disabled user from 
 	:alt: Screenshot of Scheduler Task
 
 	Disable Beuser Scheduler Task
+
+**Input field: "TestRunner (optional) "**
+
+with this field checked, you only make a test run and no user status where changed

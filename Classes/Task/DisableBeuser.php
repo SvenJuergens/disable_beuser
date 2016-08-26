@@ -30,7 +30,6 @@ class DisableBeuser
     public function run($time, $notificationEmail, $testRunner)
     {
         $this->isTestRunner = $testRunner;
-        $returnValue = true;
         $timestamp = $this->convertToTimeStamp($time);
         $this->sendNotificationEmail = !empty($notificationEmail);
 

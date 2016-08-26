@@ -36,7 +36,7 @@ Disable BeUser Task
 		Sven Jürgens
 
 	:Email:
-		t3@blue-side.de
+		sj@nordsonne.de
 
 	:License:
 		This document is published under the Open Content License

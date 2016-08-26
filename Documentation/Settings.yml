@@ -4,7 +4,7 @@
 
 ---
 conf.py:
-  copyright: 2015
+  copyright: 2016
   project: Disable BeUser Task
   version: .
   release: 
