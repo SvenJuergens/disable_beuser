@@ -13,11 +13,10 @@ namespace SvenJuergens\DisableBeuser\Task;
  *
  * The TYPO3 project - inspiring people to share!
  */
-
+use TYPO3\CMS\Core\Messaging\FlashMessage;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Scheduler\AdditionalFieldProviderInterface;
 use TYPO3\CMS\Scheduler\Controller\SchedulerModuleController;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Core\Messaging\FlashMessage;
 use TYPO3\CMS\Scheduler\Task\AbstractTask;
 
 /**
@@ -31,11 +30,11 @@ class DisableBeuserAdditionalFields implements AdditionalFieldProviderInterface
      *
      * @var array
      */
-    protected $fieldNames = array(
+    protected $fieldNames = [
         'time' => 'disablebeuser_timeOfInactivityToDisable',
         'email' => 'disablebeuser_email',
         'testrunner' => 'disablebeuser_testrunner',
-    );
+    ];
 
     protected $languageFile = 'LLL:EXT:disable_beuser/Resources/Private/Language/locallang.xlf:';
 
@@ -58,39 +57,38 @@ class DisableBeuserAdditionalFields implements AdditionalFieldProviderInterface
             $checked = '';
         }
 
-        $additionalFields = array();
+        $additionalFields = [];
 
-        $additionalFields[$this->fieldNames['testrunner']] = array(
+        $additionalFields[$this->fieldNames['testrunner']] = [
             'code' => '<input type="checkbox" name="tx_scheduler[' . $this->fieldNames['testrunner'] . ']" ' . $checked . '  />',
             'label' => $GLOBALS['LANG']->sL($this->languageFile . 'scheduler.fieldLabelTestRunner'),
             'cshKey' => '_MOD_txdisablebeuser',
             'cshLabel' => $this->fieldNames['testrunner']
-        );
+        ];
 
         $placeHolderText = $GLOBALS['LANG']->sL($this->languageFile . 'scheduler.placeholderText');
-        $additionalFields[$this->fieldNames['time']] = array(
+        $additionalFields[$this->fieldNames['time']] = [
             'code' => '<input type="text" class="form-control" placeholder="' . $placeHolderText . '" name="tx_scheduler[' . $this->fieldNames['time'] . ']" value="' . $taskInfo[$this->fieldNames['time']] . '" />',
             'label' => $GLOBALS['LANG']->sL($this->languageFile . 'scheduler.fieldLabel'),
             'cshKey' => '_MOD_txdisablebeuser',
             'cshLabel' => $this->fieldNames['time']
-        );
+        ];
 
-        $additionalFields[$this->fieldNames['email']] = array(
+        $additionalFields[$this->fieldNames['email']] = [
             'code' => '<input type="text" class="form-control" placeholder="test@example.org; test@example.com" name="tx_scheduler[' . $this->fieldNames['email'] . ']" value="' . $taskInfo[$this->fieldNames['email']] . '" />',
             'label' => $GLOBALS['LANG']->sL($this->languageFile . 'scheduler.fieldLabelEmail'),
             'cshKey' => '_MOD_txdisablebeuser',
             'cshLabel' => $this->fieldNames['email']
-        );
+        ];
         return $additionalFields;
     }
-
 
     /**
      * Validates the additional fields' values
      *
      * @param array $submittedData An array containing the data submitted by the add/edit task form
      * @param \TYPO3\CMS\Scheduler\Controller\SchedulerModuleController $schedulerModule Reference to the scheduler backend module
-     * @return boolean TRUE if validation was ok (or selected class is not relevant), FALSE otherwise
+     * @return bool TRUE if validation was ok (or selected class is not relevant), FALSE otherwise
      */
     public function validateAdditionalFields(array &$submittedData, SchedulerModuleController $schedulerModule)
     {
@@ -142,7 +140,6 @@ class DisableBeuserAdditionalFields implements AdditionalFieldProviderInterface
         }
         return $validData;
     }
-
 
     /**
      * Takes care of saving the additional fields' values in the task's object

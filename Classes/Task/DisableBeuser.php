@@ -13,15 +13,13 @@ namespace SvenJuergens\DisableBeuser\Task;
  *
  * The TYPO3 project - inspiring people to share!
  */
-
 use SvenJuergens\DisableBeuser\Utility\SendMailUtility;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-
 class DisableBeuser
 {
-    protected $disabledUser = array();
+    protected $disabledUser = [];
 
     protected $sendNotificationEmail = false;
 
@@ -65,7 +63,6 @@ class DisableBeuser
         return $this->manageMailTransport($notificationEmail);
     }
 
-
     /**
      * returns a timestamp
      *
@@ -86,7 +83,6 @@ class DisableBeuser
     public function disableUser($where)
     {
         if ($this->sendNotificationEmail === true) {
-            $rows = array();
             $rows = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
                 'username,lastlogin',
                 'be_users',
@@ -95,11 +91,11 @@ class DisableBeuser
             $this->disabledUser = array_merge($this->disabledUser, $rows);
         }
 
-        if($this->isTestRunner === false){
+        if ($this->isTestRunner === false) {
             $GLOBALS['TYPO3_DB']->exec_UPDATEquery(
                 'be_users',
                 $where,
-                array('disable' => '1')
+                ['disable' => '1']
             );
         }
     }

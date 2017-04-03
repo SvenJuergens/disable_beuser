@@ -13,9 +13,8 @@ namespace SvenJuergens\DisableBeuser\Task;
  *
  * The TYPO3 project - inspiring people to share!
  */
-
-use TYPO3\CMS\Scheduler\Task\AbstractTask;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Scheduler\Task\AbstractTask;
 
 class DisableBeuserTask extends AbstractTask
 {
@@ -26,9 +25,7 @@ class DisableBeuserTask extends AbstractTask
      */
     protected $timeOfInactivityToDisable = null;
 
-
     protected $notificationEmail = null;
-
 
     protected $testRunner = false;
 
@@ -65,7 +62,6 @@ class DisableBeuserTask extends AbstractTask
         $this->timeOfInactivityToDisable = $timeOfInactivityToDisable;
     }
 
-
     /**
      * Get E-Mail Address
      *
@@ -88,7 +84,7 @@ class DisableBeuserTask extends AbstractTask
     }
 
     /**
-     * @return boolean
+     * @return bool
      */
     public function isTestRunner()
     {
@@ -96,7 +92,7 @@ class DisableBeuserTask extends AbstractTask
     }
 
     /**
-     * @param boolean $testRunner
+     * @param bool $testRunner
      */
     public function setTestRunner($testRunner)
     {

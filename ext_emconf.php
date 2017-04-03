@@ -10,7 +10,7 @@
  * "version" and "dependencies" must not be touched!
  ***************************************************************/
 
-$EM_CONF[$_EXTKEY] = array(
+$EM_CONF[$_EXTKEY] = [
     'title' => 'Disable BeUser Task',
     'description' => 'Scheduler task to disable inactive User',
     'category' => 'plugin',
@@ -22,13 +22,13 @@ $EM_CONF[$_EXTKEY] = array(
     'createDirs' => '',
     'clearCacheOnLoad' => 1,
     'version' => '1.3.0',
-    'constraints' => array(
-        'depends' => array(
-            'typo3' => '6.2.0-8.2.99'
-        ),
-        'conflicts' => array(
-        ),
-        'suggests' => array(
-        ),
-    ),
-);
+    'constraints' => [
+        'depends' => [
+            'typo3' => '6.2.0-8.7.99'
+        ],
+        'conflicts' => [
+        ],
+        'suggests' => [
+        ],
+    ],
+];
