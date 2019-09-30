@@ -14,53 +14,67 @@ namespace SvenJuergens\DisableBeuser\Task;
  * The TYPO3 project - inspiring people to share!
  */
 use SvenJuergens\DisableBeuser\Utility\SendMailUtility;
-use TYPO3\CMS\Backend\Utility\BackendUtility;
+use TYPO3\CMS\Core\Database\Connection;
+use TYPO3\CMS\Core\Database\ConnectionPool;
+use TYPO3\CMS\Core\Database\Query\QueryBuilder;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class DisableBeuser
 {
+    private $userTable = 'be_users';
+
+    /**
+     * disabledUser
+     *
+     * @var array
+     */
     protected $disabledUser = [];
 
+    /**
+     * sendNotificationEmail
+     *
+     * @var bool
+     */
     protected $sendNotificationEmail = false;
 
+    /**
+     * isTestRunner
+     *
+     * @var bool
+     */
     protected $isTestRunner = false;
+    /**
+     * @var int
+     */
+    protected $timestamp;
 
-    public function run($time, $notificationEmail, $testRunner)
+    /**
+     * @param $time
+     * @param $notificationEmail
+     * @param $testRunner
+     * @return bool
+     * @throws \TYPO3\CMS\Core\Exception
+     * @throws \Exception
+     */
+    public function run($time, $notificationEmail, $testRunner): bool
     {
         $this->isTestRunner = $testRunner;
-        $timestamp = $this->convertToTimeStamp($time);
+        $this->timestamp = $this->convertToTimeStamp($time);
         $this->sendNotificationEmail = !empty($notificationEmail);
 
-        // update alle user
-        // welche NICHT Administratoren sind
-        // und einen lastlogin kleiner/gleich $timestamp haben
-        // und lastlogin NICHT 0 ist -> die haben sich noch nicht eingeloggt
-        // und nicht mit '_cli' beginnen
-        $normalUser = ' admin=0
-                        AND donotdisable=0'
-                    . ' AND lastLogin <=' . (int)$timestamp
-                    . ' AND lastLogin!=0'
-                    . ' AND username NOT LIKE "_cli_%"'
-                    . BackendUtility::deleteClause('be_users')
-                    . BackendUtility::BEenableFields('be_users');
+        $usersNotLoggedInInTime = $this->getUsersNotLoggedInInTime();
+        $usersNeverNotLoggedIn = $this->getUsersNeverNotLoggedIn();
 
-        $this->disableUser($normalUser);
+        $disabledUser = array_merge($usersNotLoggedInInTime, $usersNeverNotLoggedIn);
 
-        // update alle user
-        // welche NICHT Administratoren sind
-        // und einen lastlogin GLEICH 0 haben -> die haben sich noch nicht eingeloggt
-        // UND ein Erstellungsdatum kleiner/gleich $timestamp haben
-        // und nicht mit '_cli' beginnen
-        $userNeverLoggedIn = '  admin=0
-                                AND lastLogin = 0'
-                            . ' AND donotdisable=0'
-                            . ' AND crdate <=' . (int)$timestamp
-                            . ' AND username NOT LIKE "_cli_%"'
-                            . BackendUtility::deleteClause('be_users')
-                            . BackendUtility::BEenableFields('be_users');
+        if ($this->isTestRunner === false) {
+            $this->disableTheseUser($disabledUser);
+        }
+        if ($this->sendNotificationEmail === true) {
+            $this->manageMailTransport($notificationEmail, $disabledUser);
+        }
 
-        $this->disableUser($userNeverLoggedIn);
-        return $this->manageMailTransport($notificationEmail);
+        return true;
     }
 
     /**
@@ -68,59 +82,125 @@ class DisableBeuser
      *
      * @param $time
      * @return int
+     * @throws \Exception
      */
-    public function convertToTimeStamp($time)
+    public function convertToTimeStamp($time): int
     {
         $dateTime = new \DateTime();
-        return $dateTime->modify('-' . $time)->getTimeStamp();
+        return $dateTime->modify('-' . $time)->getTimestamp();
     }
 
-    /**
-     * Updates BeUser
-     *
-     * @param $where
-     */
-    public function disableUser($where)
+    protected function disableTheseUser($disableUser): void
     {
-        if ($this->sendNotificationEmail === true) {
-            $rows = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
-                'username,lastlogin',
-                'be_users',
-                $where
-            );
-            $this->disabledUser = array_merge($this->disabledUser, $rows);
-        }
+        /** @var QueryBuilder $queryBuilder */
+        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
+            ->getQueryBuilderForTable('be_users');
 
-        if ($this->isTestRunner === false) {
-            $GLOBALS['TYPO3_DB']->exec_UPDATEquery(
-                'be_users',
-                $where,
-                ['disable' => '1']
-            );
-        }
+        $queryBuilder
+            ->update($this->getUserTable())
+            ->where(
+                $queryBuilder->expr()->in(
+                    'uid',
+                    $queryBuilder->createNamedParameter(
+                        array_column($disableUser, 'uid'),
+                        Connection::PARAM_INT_ARRAY
+                    )
+                )
+            )
+            ->set('disable', '1')
+            ->execute();
     }
 
     /**
      * Checks if it's necessary to send a notification Mail
      *
      * @param $notificationEmail E-Mail(s) to inform about User
+     * @param $disabledUser
      * @return bool
      */
-    public function manageMailTransport($notificationEmail)
+    public function manageMailTransport($notificationEmail, $disabledUser): bool
     {
         $returnValue = false;
-        if ($this->sendNotificationEmail === false || empty($this->disabledUser)) {
+        if ($this->sendNotificationEmail === false || empty($disabledUser)) {
             return true;
         }
 
         $emails = GeneralUtility::trimExplode(';', $notificationEmail, true);
 
         foreach ($emails as $key => $email) {
-            $returnValue = SendMailUtility::sendEmail($email, $this->disabledUser);
+            $returnValue = SendMailUtility::sendEmail($email, $disabledUser);
             if ($returnValue === false) {
                 break;
             }
         }
         return $returnValue;
+    }
+
+    /**
+     * update alle user
+     * welche NICHT Administratoren sind
+     * und einen lastlogin kleiner/gleich $timestamp haben
+     * und lastlogin NICHT 0 ist -> die haben sich noch nicht eingeloggt
+     * und nicht mit '_cli' beginnen
+     *
+     * @return mixed[]
+     */
+    protected function getUsersNotLoggedInInTime()
+    {
+        /** @var QueryBuilder $queryBuilder */
+        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
+            ->getQueryBuilderForTable('be_users');
+        return $queryBuilder
+            ->select('uid', 'username', 'lastlogin')
+            ->from($this->getUserTable())
+            ->where(
+                $queryBuilder->expr()->andX(
+                    $queryBuilder->expr()->eq('admin', $queryBuilder->createNamedParameter(0, \PDO::PARAM_INT)),
+                    $queryBuilder->expr()->eq('donotdisable', $queryBuilder->createNamedParameter(0, \PDO::PARAM_INT)),
+                    $queryBuilder->expr()->lte('lastlogin', $queryBuilder->createNamedParameter($this->timestamp, \PDO::PARAM_INT)),
+                    $queryBuilder->expr()->neq('lastlogin', $queryBuilder->createNamedParameter(0, \PDO::PARAM_INT)),
+                    $queryBuilder->expr()->notLike('username', $queryBuilder->createNamedParameter('_cli_%', \PDO::PARAM_STR))
+                )
+            )
+            ->execute()
+            ->fetchAll();
+    }
+
+    /**
+     * get alle user
+     * welche NICHT Administratoren sind
+     * und einen lastlogin GLEICH 0 haben -> die haben sich noch nicht eingeloggt
+     * UND ein Erstellungsdatum kleiner/gleich $timestamp haben
+     * und nicht mit '_cli' beginnen
+     *
+     * @return mixed[]
+     */
+    protected function getUsersNeverNotLoggedIn()
+    {
+        /** @var QueryBuilder $queryBuilder */
+        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
+            ->getQueryBuilderForTable('be_users');
+        return $queryBuilder
+            ->select('uid', 'username', 'lastlogin')
+            ->from($this->getUserTable())
+            ->where(
+                $queryBuilder->expr()->andX(
+                    $queryBuilder->expr()->eq('admin', $queryBuilder->createNamedParameter(0, \PDO::PARAM_INT)),
+                    $queryBuilder->expr()->eq('lastlogin', $queryBuilder->createNamedParameter(0, \PDO::PARAM_INT)),
+                    $queryBuilder->expr()->eq('donotdisable', $queryBuilder->createNamedParameter(0, \PDO::PARAM_INT)),
+                    $queryBuilder->expr()->lte('crdate', $queryBuilder->createNamedParameter($this->timestamp, \PDO::PARAM_INT)),
+                    $queryBuilder->expr()->notLike('username', $queryBuilder->createNamedParameter('_cli_%', \PDO::PARAM_STR))
+                )
+            )
+            ->execute()
+            ->fetchAll();
+    }
+
+    /**
+     * @return string
+     */
+    public function getUserTable(): string
+    {
+        return $this->userTable;
     }
 }

@@ -18,6 +18,7 @@ use TYPO3\CMS\Scheduler\Task\AbstractTask;
 
 class DisableBeuserTask extends AbstractTask
 {
+
     /**
      * Date/Time Format
      *
@@ -31,7 +32,6 @@ class DisableBeuserTask extends AbstractTask
 
     public function execute()
     {
-        $returnValue = false;
         $Logic = GeneralUtility::makeInstance(DisableBeuser::class);
         $returnValue = $Logic->run(
             $this->getTimeOfInactivityToDisable(),
@@ -46,7 +46,7 @@ class DisableBeuserTask extends AbstractTask
      *
      * @return string Comma-Separated Lists with uids to Exclude.
      */
-    public function getTimeOfInactivityToDisable()
+    public function getTimeOfInactivityToDisable(): string
     {
         return $this->timeOfInactivityToDisable;
     }
@@ -55,9 +55,8 @@ class DisableBeuserTask extends AbstractTask
      * Sets the Date/Time Format.
      *
      * @param string $timeOfInactivityToDisable Date/Time Format.
-     * @return void
      */
-    public function setTimeOfInactivityToDisable($timeOfInactivityToDisable)
+    public function setTimeOfInactivityToDisable($timeOfInactivityToDisable): void
     {
         $this->timeOfInactivityToDisable = $timeOfInactivityToDisable;
     }
@@ -67,7 +66,7 @@ class DisableBeuserTask extends AbstractTask
      *
      * @return string
      */
-    public function getNotificationEmail()
+    public function getNotificationEmail(): string
     {
         return $this->notificationEmail;
     }
@@ -76,9 +75,8 @@ class DisableBeuserTask extends AbstractTask
      * Set E-Mail Address
      *
      * @param string $email E-Mail Address
-     * @return void
      */
-    public function setNotificationEmail($email)
+    public function setNotificationEmail($email): void
     {
         $this->notificationEmail = $email;
     }
@@ -86,7 +84,7 @@ class DisableBeuserTask extends AbstractTask
     /**
      * @return bool
      */
-    public function isTestRunner()
+    public function isTestRunner(): bool
     {
         return $this->testRunner;
     }
@@ -94,7 +92,7 @@ class DisableBeuserTask extends AbstractTask
     /**
      * @param bool $testRunner
      */
-    public function setTestRunner($testRunner)
+    public function setTestRunner($testRunner): void
     {
         $this->testRunner = (bool)$testRunner;
     }

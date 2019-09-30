@@ -13,9 +13,10 @@ namespace SvenJuergens\DisableBeuser\Utility;
  *
  * The TYPO3 project - inspiring people to share!
  */
-use TYPO3\CMS\Core\Exception;
+use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Mail\MailMessage;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Core\Utility\MailUtility;
 use TYPO3\CMS\Fluid\View\StandaloneView;
 
 class SendMailUtility
@@ -25,7 +26,6 @@ class SendMailUtility
      * @param $notificationEmail
      * @param $disabledUser
      * @return bool
-     * @throws Exception
      */
     public static function sendEmail($notificationEmail, $disabledUser)
     {
@@ -36,18 +36,16 @@ class SendMailUtility
 
         $mailBody = self::getMailBody($disabledUser);
 
+        $setFrom = MailUtility::getSystemFromAddress();
         // Prepare mailer and send the mail
-        try {
-            $mailer = GeneralUtility::makeInstance(MailMessage::class);
-            $mailer->setFrom($notificationEmail);
-            $mailer->setSubject('SCHEDULER-Task DisableBeuser:' . htmlspecialchars($GLOBALS['TYPO3_CONF_VARS']['SYS']['sitename']));
-            $mailer->setBody($mailBody, 'text/html');
-            $mailer->setTo($notificationEmail);
-            $mailsSend = $mailer->send();
-            $success = $mailsSend > 0;
-        } catch (Exception $e) {
-            throw new Exception($e->getMessage());
-        }
+
+        $mailer = GeneralUtility::makeInstance(MailMessage::class);
+        $mailer->setFrom($setFrom);
+        $mailer->setSubject('SCHEDULER-Task DisableBeuser:' . htmlspecialchars($GLOBALS['TYPO3_CONF_VARS']['SYS']['sitename']));
+        $mailer->setBody($mailBody, 'text/html');
+        $mailer->setTo($notificationEmail);
+        $mailsSend = $mailer->send();
+        $success = $mailsSend > 0;
         return $success;
     }
 
@@ -57,7 +55,12 @@ class SendMailUtility
      */
     public static function getMailBody($disabledUser)
     {
-        $extensionConfig = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['disable_beuser']);
+        if (class_exists(ExtensionConfiguration::class)) {
+            $extensionConfig = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get('disable_beuser');
+        } else {
+            //@extensionScannerIgnoreLine
+            $extensionConfig = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['disable_beuser']);
+        }
 
         if (empty($extensionConfig)) {
             $extensionConfig['templatePath'] = 'EXT:disable_beuser/Resources/Private/Templates/emailTemplate.html';
