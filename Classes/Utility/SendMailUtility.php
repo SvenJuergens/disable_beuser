@@ -13,6 +13,9 @@ namespace SvenJuergens\DisableBeuser\Utility;
  *
  * The TYPO3 project - inspiring people to share!
  */
+
+use TYPO3\CMS\Core\Configuration\Exception\ExtensionConfigurationExtensionNotConfiguredException;
+use TYPO3\CMS\Core\Configuration\Exception\ExtensionConfigurationPathDoesNotExistException;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Mail\MailMessage;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -25,25 +28,27 @@ class SendMailUtility
     /**
      * @param $notificationEmail
      * @param $disabledUser
+     * @param $isTestRunner
      * @return bool
+     * @throws ExtensionConfigurationExtensionNotConfiguredException
+     * @throws ExtensionConfigurationPathDoesNotExistException
      */
-    public static function sendEmail($notificationEmail, $disabledUser)
+    public static function sendEmail($notificationEmail, $disabledUser, $isTestRunner)
     {
         $success = false;
         if (!GeneralUtility::validEmail($notificationEmail)) {
             return $success;
         }
 
-        $mailBody = self::getMailBody($disabledUser);
+        $mailBody = self::getMailBody($disabledUser, $isTestRunner);
 
         $setFrom = MailUtility::getSystemFromAddress();
         // Prepare mailer and send the mail
-
         $mailer = GeneralUtility::makeInstance(MailMessage::class);
-        $mailer->setFrom($setFrom);
-        $mailer->setSubject('SCHEDULER-Task DisableBeuser:' . htmlspecialchars($GLOBALS['TYPO3_CONF_VARS']['SYS']['sitename']));
-        $mailer->setBody($mailBody, 'text/html');
-        $mailer->setTo($notificationEmail);
+        $mailer->setFrom($setFrom)
+                ->setSubject('SCHEDULER-Task DisableBeuser:' . htmlspecialchars($GLOBALS['TYPO3_CONF_VARS']['SYS']['sitename']))
+                ->setBody($mailBody, 'text/html')
+                ->setTo($notificationEmail);
         $mailsSend = $mailer->send();
         $success = $mailsSend > 0;
         return $success;
@@ -51,9 +56,12 @@ class SendMailUtility
 
     /**
      * @param $disabledUser
+     * @param $isTestRunner
      * @return mixed
+     * @throws ExtensionConfigurationExtensionNotConfiguredException
+     * @throws ExtensionConfigurationPathDoesNotExistException
      */
-    public static function getMailBody($disabledUser)
+    public static function getMailBody($disabledUser, $isTestRunner)
     {
         if (class_exists(ExtensionConfiguration::class)) {
             $extensionConfig = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get('disable_beuser');
@@ -69,7 +77,10 @@ class SendMailUtility
         $templateFile = GeneralUtility::getFileAbsFileName($extensionConfig['templatePath']);
         $view = GeneralUtility::makeInstance(StandaloneView::class);
         $view->setTemplatePathAndFilename($templateFile);
-        $view->assign('disabledUser', $disabledUser);
+        $view->assignMultiple([
+            'disabledUser' => $disabledUser,
+            'isTestRunner' => $isTestRunner
+        ]);
         return $view->render();
     }
 }

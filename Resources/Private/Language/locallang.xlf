@@ -33,6 +33,9 @@
 			<trans-unit id="email.disableduser" xml:space="preserve">
 				<source>Disabled User</source>
 			</trans-unit>
+			<trans-unit id="email.disableduserIsTestRunner" xml:space="preserve" approved="yes">
+				<source>Disabled User (Dry Run)</source>
+			</trans-unit>
 			<trans-unit id="email.username" xml:space="preserve">
 				<source>Username</source>
 			</trans-unit>

@@ -14,6 +14,8 @@ namespace SvenJuergens\DisableBeuser\Task;
  * The TYPO3 project - inspiring people to share!
  */
 use SvenJuergens\DisableBeuser\Utility\SendMailUtility;
+use TYPO3\CMS\Core\Configuration\Exception\ExtensionConfigurationExtensionNotConfiguredException;
+use TYPO3\CMS\Core\Configuration\Exception\ExtensionConfigurationPathDoesNotExistException;
 use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Query\QueryBuilder;
@@ -117,6 +119,8 @@ class DisableBeuser
      * @param $notificationEmail E-Mail(s) to inform about User
      * @param $disabledUser
      * @return bool
+     * @throws ExtensionConfigurationExtensionNotConfiguredException
+     * @throws ExtensionConfigurationPathDoesNotExistException
      */
     public function manageMailTransport($notificationEmail, $disabledUser): bool
     {
@@ -128,7 +132,7 @@ class DisableBeuser
         $emails = GeneralUtility::trimExplode(';', $notificationEmail, true);
 
         foreach ($emails as $key => $email) {
-            $returnValue = SendMailUtility::sendEmail($email, $disabledUser);
+            $returnValue = SendMailUtility::sendEmail($email, $disabledUser, $this->isTestRunner);
             if ($returnValue === false) {
                 break;
             }

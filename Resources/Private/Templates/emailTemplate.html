@@ -4,7 +4,16 @@
 	<title></title>
 </head>
 <body>
-	<h1><f:translate key="LLL:EXT:disable_beuser/Resources/Private/Language/locallang.xlf:email.disableduser"/></h1>
+	<h1>
+		<f:if condition="{isTestRunner}">
+			<f:then>
+				<f:translate key="LLL:EXT:disable_beuser/Resources/Private/Language/locallang.xlf:email.disableduserIsTestRunner"/>
+			</f:then>
+			<f:else>
+				<f:translate key="LLL:EXT:disable_beuser/Resources/Private/Language/locallang.xlf:email.disableduser"/>
+			</f:else>
+		</f:if>
+	</h1>
 	<table>
 		<thead align="left">
 			<tr>

@@ -39,6 +39,10 @@
 				<source>Disabled User</source>
 				<target>Folgende Benutzer wurden deaktiviert</target>
 			</trans-unit>
+			<trans-unit id="email.disableduserIsTestRunner" xml:space="preserve" approved="yes">
+				<source>Disabled User (Dry Run)</source>
+				<target>Folgende Benutzer wurden deaktiviert (Probelauf)</target>
+			</trans-unit>
 			<trans-unit id="email.username" xml:space="preserve" approved="yes">
 				<source>Username</source>
 				<target>Benutzername</target>
