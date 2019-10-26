@@ -1,5 +1,6 @@
 <?php
 namespace SvenJuergens\DisableBeuser\Task;
+
 /**
  * This file is part of the TYPO3 CMS project.
  *
@@ -17,9 +18,9 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Scheduler\AdditionalFieldProviderInterface;
 use TYPO3\CMS\Scheduler\Controller\SchedulerModuleController;
 use TYPO3\CMS\Scheduler\Task\AbstractTask;
+
 /**
  * Original TASK taken from EXT:reports
- *
  */
 class DisableBeuserAdditionalFieldsv8 implements AdditionalFieldProviderInterface
 {
@@ -130,7 +131,6 @@ class DisableBeuserAdditionalFieldsv8 implements AdditionalFieldProviderInterfac
      *
      * @param array $submittedData An array containing the data submitted by the add/edit task form
      * @param \TYPO3\CMS\Scheduler\Task\AbstractTask $task Reference to the scheduler backend module
-     * @return void
      */
     public function saveAdditionalFields(array $submittedData, AbstractTask $task)
     {
