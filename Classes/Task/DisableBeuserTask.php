@@ -13,6 +13,7 @@ namespace SvenJuergens\DisableBeuser\Task;
  *
  * The TYPO3 project - inspiring people to share!
  */
+use TYPO3\CMS\Core\Exception;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Scheduler\Task\AbstractTask;
 
@@ -30,6 +31,10 @@ class DisableBeuserTask extends AbstractTask
 
     protected $testRunner = false;
 
+    /**
+     * @return bool
+     * @throws Exception
+     */
     public function execute()
     {
         $Logic = GeneralUtility::makeInstance(DisableBeuser::class);

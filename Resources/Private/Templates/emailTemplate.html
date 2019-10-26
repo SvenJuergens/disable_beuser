@@ -19,6 +19,9 @@
 			<tr>
 				<th><f:translate key="LLL:EXT:disable_beuser/Resources/Private/Language/locallang.xlf:email.username"/></th>
 				<th><f:translate key="LLL:EXT:disable_beuser/Resources/Private/Language/locallang.xlf:email.lastlogin"/></th>
+				<th><f:translate key="LLL:EXT:disable_beuser/Resources/Private/Language/locallang.xlf:email.realName" default="Name"/></th>
+				<th><f:translate key="LLL:EXT:disable_beuser/Resources/Private/Language/locallang.xlf:email.email" default="E-Mail"/></th>
+				<th><f:translate key="LLL:EXT:disable_beuser/Resources/Private/Language/locallang.xlf:email.crdate" default="Erstellungsdatum"/></th>
 			</tr>
 		</thead>
 		<tbody>
@@ -31,6 +34,9 @@
 							<f:else><f:translate key="LLL:EXT:beuser/Resources/Private/Language/locallang.xlf:never"/></f:else>
 						</f:if>
 					</td>
+					<td>{beuser.realName}</td>
+					<td>{beuser.email}</td>
+					<td><f:format.date format="d.m.Y - H:i">@{beuser.crdate}</f:format.date></td>
 				</tr>
 			</f:for>
 		</tbody>

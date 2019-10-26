@@ -51,6 +51,18 @@
 				<source>Last Login</source>
 				<target>letzter Login</target>
 			</trans-unit>
+			<trans-unit id="email.realName" xml:space="preserve">
+				<source>Name</source>
+				<target>Name</target>
+			</trans-unit>
+			<trans-unit id="email.email" xml:space="preserve">
+				<source>Email</source>
+				<target>E-Mail</target>
+			</trans-unit>
+			<trans-unit id="email.crdate" xml:space="preserve">
+				<source>Created At</source>
+				<target>Erstellt am</target>
+			</trans-unit>
 		</body>
 	</file>
 </xliff>

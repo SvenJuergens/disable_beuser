@@ -26,11 +26,10 @@ class DisableBeuser
     private $userTable = 'be_users';
 
     /**
-     * disabledUser
-     *
+     * Fields to select
      * @var array
      */
-    protected $disabledUser = [];
+    protected $fields = ['uid', 'username', 'lastlogin', 'realName', 'email', 'crdate'];
 
     /**
      * sendNotificationEmail
@@ -153,9 +152,9 @@ class DisableBeuser
     {
         /** @var QueryBuilder $queryBuilder */
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-            ->getQueryBuilderForTable('be_users');
+            ->getQueryBuilderForTable($this->getUserTable());
         return $queryBuilder
-            ->select('uid', 'username', 'lastlogin')
+            ->select(...$this->fields)
             ->from($this->getUserTable())
             ->where(
                 $queryBuilder->expr()->andX(
@@ -183,9 +182,9 @@ class DisableBeuser
     {
         /** @var QueryBuilder $queryBuilder */
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-            ->getQueryBuilderForTable('be_users');
+            ->getQueryBuilderForTable($this->getUserTable());
         return $queryBuilder
-            ->select('uid', 'username', 'lastlogin')
+            ->select(...$this->fields)
             ->from($this->getUserTable())
             ->where(
                 $queryBuilder->expr()->andX(
