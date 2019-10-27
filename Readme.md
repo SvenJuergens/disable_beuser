@@ -2,6 +2,11 @@
 
 [![Latest Stable Version](https://img.shields.io/packagist/v/svenjuergens/disable_beuser.svg)](https://packagist.org/packages/svenjuergens/belogin_images)
 
+#Thanks for the support
+First a thank you for supporting the further development of this extension to [Darmstadt University of Applied Sciences](https://www.h-da.de/)
+
+##What does it do?
+
 This extension integrate a scheduler task to disable backend user after a configurable amount of time.
 ## Installation
 
