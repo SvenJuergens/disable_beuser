@@ -8,17 +8,16 @@ This extension integrate a scheduler task to disable backend user after a config
 Simply install the extension with Extension Manager or composer
 `composer require svenjuergens/disable_beuser`
 
-
 ## Configuration
 After installation you have the possibility to exclude single user from the scheduler task.
 
-![EditUser](https://raw.github.com/SvenJuergens/disable_beuser/master/Documentation/Images/AdministratorManual/exclude-user.png)
+![EditUser](https://raw.github.com/SvenJuergens/disable_beuser/master/Documentation/Images/exclude-user.png)
 
 Optional: You can set an individual HTML E-Mail Template in ExtensionManager Configuration
 
-![configuration2](https://raw.github.com/SvenJuergens/disable_beuser/master/Documentation/Images/AdministratorManual/set-emailtemplate.png)
+![configuration2](https://raw.github.com/SvenJuergens/disable_beuser/master/Documentation/Images/set-emailtemplate.png)
 
-####Task Configuration 
+###Task Configuration 
 
 **Input field: "Time of Inactivity to disable Beuser"**
 
@@ -51,7 +50,7 @@ If you set an email address you get the date and a list with disabled user from 
 (Separate Mails with ";" )
 
 
-![configuration3](https://raw.github.com/SvenJuergens/disable_beuser/master/Documentation/Images/AdministratorManual/disable-beuser-task.png)
+![configuration3](https://raw.github.com/SvenJuergens/disable_beuser/master/Documentation/Images/disable-beuser-task.png)
 
 **Input field: "TestRunner (optional) "**
 
