@@ -16,7 +16,7 @@
     "ext-pdo": "*"
   },
   "replace": {
-    "disable_beuser": "self.version",
+    "svenjuergens/disable_beuser": "self.version",
     "typo3-ter/disable_beuser": "self.version"
   },
   "autoload": {
