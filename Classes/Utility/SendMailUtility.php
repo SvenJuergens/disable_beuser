@@ -62,13 +62,7 @@ class SendMailUtility
      */
     public static function getMailBody($disabledUser, $isTestRunner)
     {
-        if (class_exists(ExtensionConfiguration::class)) {
-            $extensionConfig = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get('disable_beuser');
-        } else {
-            //@extensionScannerIgnoreLine
-            $extensionConfig = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['disable_beuser']);
-        }
-
+        $extensionConfig = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get('disable_beuser');
         if (empty($extensionConfig)) {
             $extensionConfig['templatePath'] = 'EXT:disable_beuser/Resources/Private/Templates/emailTemplate.html';
         }
