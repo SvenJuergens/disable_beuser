@@ -160,7 +160,7 @@ class DisableBeuserAdditionalFields extends AbstractAdditionalFieldProvider
         }
         $task->setTimeOfInactivityToDisable(htmlspecialchars($submittedData[$this->fieldNames['time']]));
         $task->setNotificationEmail($submittedData[$this->fieldNames['email']]);
-        $task->setTestRunner($submittedData[$this->fieldNames['testrunner']]);
+        $task->setTestRunner($submittedData[$this->fieldNames['testrunner']] ?? false);
     }
 
     /**
