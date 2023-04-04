@@ -13,6 +13,9 @@ namespace SvenJuergens\DisableBeuser\Task;
  *
  * The TYPO3 project - inspiring people to share!
  */
+
+use Psr\EventDispatcher\EventDispatcherInterface;
+use SvenJuergens\DisableBeuser\Event\BeUserDisabledEvent;
 use SvenJuergens\DisableBeuser\Utility\SendMailUtility;
 use TYPO3\CMS\Core\Configuration\Exception\ExtensionConfigurationExtensionNotConfiguredException;
 use TYPO3\CMS\Core\Configuration\Exception\ExtensionConfigurationPathDoesNotExistException;
@@ -24,6 +27,8 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 class DisableBeuser
 {
     private $userTable = 'be_users';
+
+    private EventDispatcherInterface $eventDispatcher;
 
     /**
      * Fields to select
@@ -49,6 +54,11 @@ class DisableBeuser
      */
     protected $timestamp;
 
+    public function injectEventDispatcher(EventDispatcherInterface $eventDispatcher): void
+    {
+        $this->eventDispatcher = $eventDispatcher;
+    }
+
     /**
      * @param $time
      * @param $notificationEmail
@@ -70,6 +80,9 @@ class DisableBeuser
 
         if ($this->isTestRunner === false) {
             $this->disableTheseUser($disabledUser);
+            $this->eventDispatcher->dispatch(
+                new BeUserDisabledEvent($disabledUser, $time)
+            );
         }
         if ($this->sendNotificationEmail === true) {
             $this->manageMailTransport($notificationEmail, $disabledUser);
