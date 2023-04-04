@@ -153,7 +153,7 @@ class DisableBeuser
     }
 
     /**
-     * update alle user
+     * get alle user
      * welche NICHT Administratoren sind
      * und einen lastlogin kleiner/gleich $timestamp haben
      * und lastlogin NICHT 0 ist -> die haben sich noch nicht eingeloggt
