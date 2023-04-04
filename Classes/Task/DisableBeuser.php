@@ -179,7 +179,7 @@ class DisableBeuser
                 )
             )
             ->execute()
-            ->fetchAll();
+            ->fetchAllAssociative();
     }
 
     /**
@@ -209,7 +209,7 @@ class DisableBeuser
                 )
             )
             ->execute()
-            ->fetchAll();
+            ->fetchAllAssociative();
     }
 
     /**
