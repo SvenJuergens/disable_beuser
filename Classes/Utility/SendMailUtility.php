@@ -34,7 +34,7 @@ class SendMailUtility
      * @throws ExtensionConfigurationExtensionNotConfiguredException
      * @throws ExtensionConfigurationPathDoesNotExistException
      */
-    public static function sendEmail($notificationEmail, $disabledUser, $isTestRunner)
+    public static function sendEmail($notificationEmail, $disabledUser, $isTestRunner): bool
     {
         if (!GeneralUtility::validEmail($notificationEmail)) {
             return false;
@@ -61,11 +61,11 @@ class SendMailUtility
     /**
      * @param $disabledUser
      * @param $isTestRunner
-     * @return mixed
+     * @return string
      * @throws ExtensionConfigurationExtensionNotConfiguredException
      * @throws ExtensionConfigurationPathDoesNotExistException
      */
-    public static function getMailBody($disabledUser, $isTestRunner)
+    public static function getMailBody($disabledUser, $isTestRunner): string
     {
         $extensionConfig = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get('disable_beuser');
         if (empty($extensionConfig)) {

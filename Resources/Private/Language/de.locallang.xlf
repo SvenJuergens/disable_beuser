@@ -20,8 +20,8 @@
 				<target>TestRunner (optional)</target>
 			</trans-unit>
 			<trans-unit id="error.empty" xml:space="preserve" approved="yes">
-				<source>please set a date/time format: http://php.net/manual/de/datetime.formats.php</source>
-				<target>Bitte ein Date/Time Format setzen</target>
+				<source>please set a date/time format: https://php.net/manual/de/datetime.formats.php</source>
+				<target>Bitte ein Date/Time Format setzen.</target>
 			</trans-unit>
 			<trans-unit id="error.wrongFormat" xml:space="preserve" approved="yes">
 				<source>please set a correct date/time format</source>

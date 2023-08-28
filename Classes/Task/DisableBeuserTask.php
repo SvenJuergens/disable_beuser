@@ -23,27 +23,25 @@ class DisableBeuserTask extends AbstractTask
     /**
      * Date/Time Format
      *
-     * @var string
+     * @var null|string
      */
-    protected $timeOfInactivityToDisable = null;
+    protected ?string $timeOfInactivityToDisable = null;
 
-    protected $notificationEmail = null;
+    protected ?string $notificationEmail = null;
 
-    protected $testRunner = false;
+    protected bool $testRunner = false;
 
     /**
      * @return bool
-     * @throws Exception
+     * @throws Exception|\Doctrine\DBAL\Driver\Exception
      */
-    public function execute()
+    public function execute(): bool
     {
-        $Logic = GeneralUtility::makeInstance(DisableBeuser::class);
-        $returnValue = $Logic->run(
+        return GeneralUtility::makeInstance(DisableBeuser::class)->run(
             $this->getTimeOfInactivityToDisable(),
             $this->getNotificationEmail(),
             $this->isTestRunner()
         );
-        return $returnValue;
     }
 
     /**
@@ -61,7 +59,7 @@ class DisableBeuserTask extends AbstractTask
      *
      * @param string $timeOfInactivityToDisable Date/Time Format.
      */
-    public function setTimeOfInactivityToDisable($timeOfInactivityToDisable): void
+    public function setTimeOfInactivityToDisable(string $timeOfInactivityToDisable): void
     {
         $this->timeOfInactivityToDisable = $timeOfInactivityToDisable;
     }
@@ -81,7 +79,7 @@ class DisableBeuserTask extends AbstractTask
      *
      * @param string $email E-Mail Address
      */
-    public function setNotificationEmail($email): void
+    public function setNotificationEmail(string $email): void
     {
         $this->notificationEmail = $email;
     }
@@ -97,8 +95,8 @@ class DisableBeuserTask extends AbstractTask
     /**
      * @param bool $testRunner
      */
-    public function setTestRunner($testRunner): void
+    public function setTestRunner(bool $testRunner): void
     {
-        $this->testRunner = (bool)$testRunner;
+        $this->testRunner = $testRunner;
     }
 }

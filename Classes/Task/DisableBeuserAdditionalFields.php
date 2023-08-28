@@ -13,6 +13,7 @@ namespace SvenJuergens\DisableBeuser\Task;
  *
  * The TYPO3 project - inspiring people to share!
  */
+use TYPO3\CMS\Core\Messaging\AbstractMessage;
 use TYPO3\CMS\Core\Localization\LanguageService;
 use TYPO3\CMS\Core\Messaging\FlashMessage;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -31,13 +32,13 @@ class DisableBeuserAdditionalFields extends AbstractAdditionalFieldProvider
      *
      * @var array
      */
-    protected $fieldNames = [
+    protected array $fieldNames = [
         'time' => 'disablebeuser_timeOfInactivityToDisable',
         'email' => 'disablebeuser_email',
         'testrunner' => 'disablebeuser_testrunner',
     ];
 
-    protected $languageFile = 'LLL:EXT:disable_beuser/Resources/Private/Language/locallang.xlf:';
+    protected string $languageFile = 'LLL:EXT:disable_beuser/Resources/Private/Language/locallang.xlf:';
 
     /**
      * Gets additional fields to render in the form to add/edit a task
@@ -45,9 +46,9 @@ class DisableBeuserAdditionalFields extends AbstractAdditionalFieldProvider
      * @param array $taskInfo Values of the fields from the add/edit task form
      * @param DisableBeuserTask $task The task object being edited. Null when adding a task!
      * @param SchedulerModuleController $schedulerModule Reference to the scheduler backend module
-     * @return array A two dimensional array, array('Identifier' => array('fieldId' => array('code' => '', 'label' => '', 'cshKey' => '', 'cshLabel' => ''))
+     * @return array A two-dimensional array, array('Identifier' => array('fieldId' => array('code' => '', 'label' => '', 'cshKey' => '', 'cshLabel' => ''))
      */
-    public function getAdditionalFields(array &$taskInfo, $task, SchedulerModuleController $schedulerModule)
+    public function getAdditionalFields(array &$taskInfo, $task, SchedulerModuleController $schedulerModule): array
     {
         $currentSchedulerModuleAction = $schedulerModule->getCurrentAction();
 
@@ -71,14 +72,14 @@ class DisableBeuserAdditionalFields extends AbstractAdditionalFieldProvider
 
         $placeHolderText = $GLOBALS['LANG']->sL($this->languageFile . 'scheduler.placeholderText');
         $additionalFields[$this->fieldNames['time']] = [
-            'code' => '<input type="text" class="form-control" placeholder="' . $placeHolderText . '" name="tx_scheduler[' . $this->fieldNames['time'] . ']" value="' . $taskInfo[$this->fieldNames['time']] . '" />',
+            'code' => '<input type="text" class="form-control" placeholder="' . $placeHolderText . '" name="tx_scheduler[' . $this->fieldNames['time'] . ']" value="' . ($taskInfo[$this->fieldNames['time']] ?? '') . '" />',
             'label' => $GLOBALS['LANG']->sL($this->languageFile . 'scheduler.fieldLabel'),
             'cshKey' => '_MOD_txdisablebeuser',
             'cshLabel' => $this->fieldNames['time']
         ];
 
         $additionalFields[$this->fieldNames['email']] = [
-            'code' => '<input type="text" class="form-control" placeholder="test@example.org; test@example.com" name="tx_scheduler[' . $this->fieldNames['email'] . ']" value="' . $taskInfo[$this->fieldNames['email']] . '" />',
+            'code' => '<input type="text" class="form-control" placeholder="test@example.org; test@example.com" name="tx_scheduler[' . $this->fieldNames['email'] . ']" value="' . ($taskInfo[$this->fieldNames['email']] ?? '') . '" />',
             'label' => $GLOBALS['LANG']->sL($this->languageFile . 'scheduler.fieldLabelEmail'),
             'cshKey' => '_MOD_txdisablebeuser',
             'cshLabel' => $this->fieldNames['email']
@@ -93,13 +94,13 @@ class DisableBeuserAdditionalFields extends AbstractAdditionalFieldProvider
      * @param SchedulerModuleController $schedulerModule Reference to the scheduler backend module
      * @return bool TRUE if validation was ok (or selected class is not relevant), FALSE otherwise
      */
-    public function validateAdditionalFields(array &$submittedData, SchedulerModuleController $schedulerModule)
+    public function validateAdditionalFields(array &$submittedData, SchedulerModuleController $schedulerModule): bool
     {
         $validInput = true;
         if (empty($submittedData[$this->fieldNames['time']])) {
             $this->addMessage(
                 $this->getLanguageService()->sL($this->languageFile . 'error.empty'),
-                FlashMessage::ERROR
+                AbstractMessage::ERROR
             );
             return false;
         }
@@ -109,7 +110,7 @@ class DisableBeuserAdditionalFields extends AbstractAdditionalFieldProvider
         } catch (\Exception $e) {
             $this->addMessage(
                 $this->getLanguageService()->sL($this->languageFile . 'error.wrongFormat'),
-                FlashMessage::ERROR
+                AbstractMessage::ERROR
             );
             return false;
         }
@@ -121,7 +122,7 @@ class DisableBeuserAdditionalFields extends AbstractAdditionalFieldProvider
                 if (!GeneralUtility::validEmail($email)) {
                     $this->addMessage(
                         $this->getLanguageService()->sL($this->languageFile . 'error.wrongEmail'),
-                        FlashMessage::ERROR
+                        AbstractMessage::ERROR
                     );
                     return false;
                     break;
@@ -129,8 +130,7 @@ class DisableBeuserAdditionalFields extends AbstractAdditionalFieldProvider
             }
         }
 
-        $validInput = $this->validateTestRunner($submittedData);
-        return $validInput;
+        return $this->validateTestRunner($submittedData);
     }
 
     public function validateTestRunner($submittedData): bool
@@ -148,9 +148,9 @@ class DisableBeuserAdditionalFields extends AbstractAdditionalFieldProvider
      * Takes care of saving the additional fields' values in the task's object
      *
      * @param array $submittedData An array containing the data submitted by the add/edit task form
-     * @param \TYPO3\CMS\Scheduler\Task\AbstractTask $task Reference to the scheduler backend module
+     * @param AbstractTask $task Reference to the scheduler backend module
      */
-    public function saveAdditionalFields(array $submittedData, AbstractTask $task)
+    public function saveAdditionalFields(array $submittedData, AbstractTask $task): void
     {
         if (!$task instanceof DisableBeuserTask) {
             throw new \InvalidArgumentException(

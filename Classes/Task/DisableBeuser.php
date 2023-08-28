@@ -14,6 +14,8 @@ namespace SvenJuergens\DisableBeuser\Task;
  * The TYPO3 project - inspiring people to share!
  */
 
+use Doctrine\DBAL\DBALException;
+use TYPO3\CMS\Core\Exception;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use SvenJuergens\DisableBeuser\Event\AfterBeUserDisabledEvent;
 use SvenJuergens\DisableBeuser\Utility\SendMailUtility;
@@ -26,7 +28,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class DisableBeuser
 {
-    private $userTable = 'be_users';
+    private string $userTable = 'be_users';
 
     private EventDispatcherInterface $eventDispatcher;
 
@@ -34,25 +36,25 @@ class DisableBeuser
      * Fields to select
      * @var array
      */
-    protected $fields = ['uid', 'username', 'lastlogin', 'realName', 'email', 'crdate'];
+    protected array $fields = ['uid', 'username', 'lastlogin', 'realName', 'email', 'crdate'];
 
     /**
      * sendNotificationEmail
      *
      * @var bool
      */
-    protected $sendNotificationEmail = false;
+    protected bool $sendNotificationEmail = false;
 
     /**
      * isTestRunner
      *
      * @var bool
      */
-    protected $isTestRunner = false;
+    protected bool $isTestRunner = false;
     /**
      * @var int
      */
-    protected $timestamp;
+    protected int $timestamp;
 
     public function injectEventDispatcher(EventDispatcherInterface $eventDispatcher): void
     {
@@ -64,8 +66,9 @@ class DisableBeuser
      * @param $notificationEmail
      * @param $testRunner
      * @return bool
-     * @throws \TYPO3\CMS\Core\Exception
+     * @throws Exception
      * @throws \Exception
+     * @throws \Doctrine\DBAL\Driver\Exception
      */
     public function run($time, $notificationEmail, $testRunner): bool
     {
@@ -104,6 +107,9 @@ class DisableBeuser
         return $dateTime->modify('-' . $time)->getTimestamp();
     }
 
+    /**
+     * @throws DBALException
+     */
     protected function disableTheseUser($disableUser): void
     {
         /** @var QueryBuilder $queryBuilder */
@@ -122,13 +128,13 @@ class DisableBeuser
                 )
             )
             ->set('disable', '1')
-            ->execute();
+            ->executeStatement();
     }
 
     /**
      * Checks if it's necessary to send a notification Mail
      *
-     * @param $notificationEmail E-Mail(s) to inform about User
+     * @param $notificationEmail
      * @param $disabledUser
      * @return bool
      * @throws ExtensionConfigurationExtensionNotConfiguredException
@@ -156,12 +162,14 @@ class DisableBeuser
      * get alle user
      * welche NICHT Administratoren sind
      * und einen lastlogin kleiner/gleich $timestamp haben
-     * und lastlogin NICHT 0 ist -> die haben sich noch nicht eingeloggt
+     * und lastlogin NICHT 0 ist → die haben sich noch nicht eingeloggt
      * und nicht mit '_cli' beginnen
      *
-     * @return mixed[]
+     * @return array
+     * @throws DBALException
+     * @throws \Doctrine\DBAL\Driver\Exception
      */
-    protected function getUsersNotLoggedInInTime()
+    protected function getUsersNotLoggedInInTime(): array
     {
         /** @var QueryBuilder $queryBuilder */
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
@@ -170,15 +178,15 @@ class DisableBeuser
             ->select(...$this->fields)
             ->from($this->getUserTable())
             ->where(
-                $queryBuilder->expr()->andX(
+                $queryBuilder->expr()->and(
                     $queryBuilder->expr()->eq('admin', $queryBuilder->createNamedParameter(0, \PDO::PARAM_INT)),
                     $queryBuilder->expr()->eq('donotdisable', $queryBuilder->createNamedParameter(0, \PDO::PARAM_INT)),
                     $queryBuilder->expr()->lte('lastlogin', $queryBuilder->createNamedParameter($this->timestamp, \PDO::PARAM_INT)),
                     $queryBuilder->expr()->neq('lastlogin', $queryBuilder->createNamedParameter(0, \PDO::PARAM_INT)),
-                    $queryBuilder->expr()->notLike('username', $queryBuilder->createNamedParameter('_cli_%', \PDO::PARAM_STR))
+                    $queryBuilder->expr()->notLike('username', $queryBuilder->createNamedParameter('_cli_%'))
                 )
             )
-            ->execute()
+            ->executeQuery()
             ->fetchAllAssociative();
     }
 
@@ -189,9 +197,11 @@ class DisableBeuser
      * UND ein Erstellungsdatum kleiner/gleich $timestamp haben
      * und nicht mit '_cli' beginnen
      *
-     * @return mixed[]
+     * @return array
+     * @throws DBALException
+     * @throws \Doctrine\DBAL\Driver\Exception
      */
-    protected function getUsersNeverNotLoggedIn()
+    protected function getUsersNeverNotLoggedIn(): array
     {
         /** @var QueryBuilder $queryBuilder */
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
@@ -200,15 +210,15 @@ class DisableBeuser
             ->select(...$this->fields)
             ->from($this->getUserTable())
             ->where(
-                $queryBuilder->expr()->andX(
+                $queryBuilder->expr()->and(
                     $queryBuilder->expr()->eq('admin', $queryBuilder->createNamedParameter(0, \PDO::PARAM_INT)),
                     $queryBuilder->expr()->eq('lastlogin', $queryBuilder->createNamedParameter(0, \PDO::PARAM_INT)),
                     $queryBuilder->expr()->eq('donotdisable', $queryBuilder->createNamedParameter(0, \PDO::PARAM_INT)),
                     $queryBuilder->expr()->lte('crdate', $queryBuilder->createNamedParameter($this->timestamp, \PDO::PARAM_INT)),
-                    $queryBuilder->expr()->notLike('username', $queryBuilder->createNamedParameter('_cli_%', \PDO::PARAM_STR))
+                    $queryBuilder->expr()->notLike('username', $queryBuilder->createNamedParameter('_cli_%'))
                 )
             )
-            ->execute()
+            ->executeQuery()
             ->fetchAllAssociative();
     }
 
