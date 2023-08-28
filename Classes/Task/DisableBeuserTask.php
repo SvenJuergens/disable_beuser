@@ -49,7 +49,7 @@ class DisableBeuserTask extends AbstractTask
     /**
      * Get the saved Date/Time Format
      *
-     * @return string Comma-Separated Lists with uids to Exclude.
+     * @return string
      */
     public function getTimeOfInactivityToDisable(): string
     {
