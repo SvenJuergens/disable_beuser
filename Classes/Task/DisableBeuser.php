@@ -15,7 +15,7 @@ namespace SvenJuergens\DisableBeuser\Task;
  */
 
 use Psr\EventDispatcher\EventDispatcherInterface;
-use SvenJuergens\DisableBeuser\Event\BeUserDisabledEvent;
+use SvenJuergens\DisableBeuser\Event\AfterBeUserDisabledEvent;
 use SvenJuergens\DisableBeuser\Utility\SendMailUtility;
 use TYPO3\CMS\Core\Configuration\Exception\ExtensionConfigurationExtensionNotConfiguredException;
 use TYPO3\CMS\Core\Configuration\Exception\ExtensionConfigurationPathDoesNotExistException;
@@ -81,7 +81,7 @@ class DisableBeuser
         if ($this->isTestRunner === false) {
             $this->disableTheseUser($disabledUser);
             $this->eventDispatcher->dispatch(
-                new BeUserDisabledEvent($disabledUser, $time)
+                new AfterBeUserDisabledEvent($disabledUser, $time)
             );
         }
         if ($this->sendNotificationEmail === true) {

@@ -2,7 +2,7 @@
 
 namespace SvenJuergens\DisableBeuser\Event;
 
-final class BeUserDisabledEvent
+final class AfterBeUserDisabledEvent
 {
 
     private array $disabledUser;
