@@ -5,6 +5,8 @@
 ## Thanks for the support
 First a thank you for supporting the further development of this extension to [Darmstadt University of Applied Sciences](https://www.h-da.de/)
 
+And [Tim Horstmann](https://github.com/timhorstmann), who created the first Event with a pull request
+
 ## What does it do?
 
 This extension integrate a scheduler task to disable backend user after a configurable amount of time.
@@ -14,7 +16,7 @@ Simply install the extension with Extension Manager or composer
 `composer require svenjuergens/disable_beuser`
 
 ## Configuration
-After installation you have the possibility to exclude single user from the scheduler task.
+After installation, you have the possibility to exclude single user from the scheduler task.
 
 ![EditUser](https://raw.github.com/SvenJuergens/disable_beuser/main/Documentation/Images/exclude-user.png)
 
@@ -22,7 +24,7 @@ Optional: You can set an individual HTML E-Mail Template in ExtensionManager Con
 
 ![configuration2](https://raw.github.com/SvenJuergens/disable_beuser/main/Documentation/Images/set-emailtemplate.png)
 
-### Task Configuration 
+### Task Configuration
 
 **Input field: "Time of Inactivity to disable Beuser"**
 
@@ -60,3 +62,6 @@ If you set an email address you get the date and a list with disabled user from 
 **Input field: "TestRunner (optional) "**
 
 with this field checked, you only make a test run and no user status where changed
+
+### Events (since 4.0.0)
+There is now an event (AfterBeUserDisabledEvent) after the be_user accounts have been deactivated. Many thanks to [Tim Horstmann](https://github.com/timhorstmann), who created the feature with a pull request.
