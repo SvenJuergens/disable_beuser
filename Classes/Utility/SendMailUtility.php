@@ -14,6 +14,8 @@ namespace SvenJuergens\DisableBeuser\Utility;
  * The TYPO3 project - inspiring people to share!
  */
 
+use SvenJuergens\DisableBeuser\Event\BeforeMailsAreSentEvent;
+use SvenJuergens\DisableBeuser\Event\AfterMailsAreSentEvent;
 use Symfony\Component\Mime\Email;
 use TYPO3\CMS\Core\Configuration\Exception\ExtensionConfigurationExtensionNotConfiguredException;
 use TYPO3\CMS\Core\Configuration\Exception\ExtensionConfigurationPathDoesNotExistException;
@@ -22,10 +24,10 @@ use TYPO3\CMS\Core\Mail\MailMessage;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MailUtility;
 use TYPO3\CMS\Fluid\View\StandaloneView;
+use Psr\EventDispatcher\EventDispatcherInterface;
 
 class SendMailUtility
 {
-
     /**
      * @param $notificationEmail
      * @param $disabledUser
@@ -54,7 +56,14 @@ class SendMailUtility
         } else{
             $mailer->setBody($mailBody, 'text/html');
         }
+        $eventDispatcher = GeneralUtility::makeInstance(EventDispatcherInterface::class);
+        $eventDispatcher->dispatch(
+            new BeforeMailsAreSentEvent($mailer, $disabledUser)
+        );
         $mailsSend = $mailer->send();
+        $eventDispatcher->dispatch(
+            new AfterMailsAreSentEvent($mailer, $disabledUser)
+        );
         return is_bool($mailsSend) ? $mailsSend : ($mailsSend > 0);
     }
 
