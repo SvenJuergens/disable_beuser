@@ -1,4 +1,5 @@
 <?php
+
 namespace SvenJuergens\DisableBeuser\Utility;
 
 /**
@@ -14,8 +15,9 @@ namespace SvenJuergens\DisableBeuser\Utility;
  * The TYPO3 project - inspiring people to share!
  */
 
-use SvenJuergens\DisableBeuser\Event\BeforeMailsAreSentEvent;
+use Psr\EventDispatcher\EventDispatcherInterface;
 use SvenJuergens\DisableBeuser\Event\AfterMailsAreSentEvent;
+use SvenJuergens\DisableBeuser\Event\BeforeMailsAreSentEvent;
 use Symfony\Component\Mime\Email;
 use TYPO3\CMS\Core\Configuration\Exception\ExtensionConfigurationExtensionNotConfiguredException;
 use TYPO3\CMS\Core\Configuration\Exception\ExtensionConfigurationPathDoesNotExistException;
@@ -24,7 +26,6 @@ use TYPO3\CMS\Core\Mail\MailMessage;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MailUtility;
 use TYPO3\CMS\Fluid\View\StandaloneView;
-use Psr\EventDispatcher\EventDispatcherInterface;
 
 class SendMailUtility
 {
@@ -50,10 +51,10 @@ class SendMailUtility
         $mailer->setFrom($setFrom)
                 ->setSubject('SCHEDULER-Task DisableBeuser:' . htmlspecialchars($GLOBALS['TYPO3_CONF_VARS']['SYS']['sitename']))
                 ->setTo($notificationEmail);
-        if($mailer instanceof Email){
+        if ($mailer instanceof Email) {
             // min TYPO3 10
             $mailer->html($mailBody);
-        } else{
+        } else {
             $mailer->setBody($mailBody, 'text/html');
         }
         $eventDispatcher = GeneralUtility::makeInstance(EventDispatcherInterface::class);
@@ -86,7 +87,7 @@ class SendMailUtility
         $view->setTemplatePathAndFilename($templateFile);
         $view->assignMultiple([
             'disabledUser' => $disabledUser,
-            'isTestRunner' => $isTestRunner
+            'isTestRunner' => $isTestRunner,
         ]);
         return $view->render();
     }

@@ -6,10 +6,8 @@ use TYPO3\CMS\Core\Mail\MailMessage;
 
 class BeforeMailsAreSentEvent
 {
-
     private MailMessage $mailer;
     private array $disabledUser;
-
 
     /**
      * @param MailMessage $mailer

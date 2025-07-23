@@ -1,4 +1,5 @@
 <?php
+
 namespace SvenJuergens\DisableBeuser\Task;
 
 /**
@@ -19,11 +20,10 @@ use TYPO3\CMS\Scheduler\Task\AbstractTask;
 
 class DisableBeuserTask extends AbstractTask
 {
-
     /**
      * Date/Time Format
      *
-     * @var null|string
+     * @var string|null
      */
     protected ?string $timeOfInactivityToDisable = null;
 

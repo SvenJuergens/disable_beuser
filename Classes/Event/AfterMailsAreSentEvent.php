@@ -9,7 +9,6 @@ class AfterMailsAreSentEvent
     private MailMessage $mailer;
     private array $disabledUser;
 
-
     /**
      * @param MailMessage $mailer
      * @param array $disabledUser
