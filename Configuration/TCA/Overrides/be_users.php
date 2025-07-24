@@ -1,4 +1,5 @@
 <?php
+
 defined('TYPO3') or die();
 
 /**
@@ -11,8 +12,8 @@ $temp = [
         'label' => 'LLL:EXT:disable_beuser/Resources/Private/Language/locallang.xlf:beuser.donotdisable',
         'config' => [
             'type' => 'check',
-            'default' => 0
-        ]
+            'default' => 0,
+        ],
     ],
 ];
 

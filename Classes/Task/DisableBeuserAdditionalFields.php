@@ -1,4 +1,5 @@
 <?php
+
 namespace SvenJuergens\DisableBeuser\Task;
 
 /**
@@ -13,14 +14,12 @@ namespace SvenJuergens\DisableBeuser\Task;
  *
  * The TYPO3 project - inspiring people to share!
  */
-use TYPO3\CMS\Core\Messaging\AbstractMessage;
 use TYPO3\CMS\Core\Localization\LanguageService;
-use TYPO3\CMS\Core\Messaging\FlashMessage;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Scheduler\AbstractAdditionalFieldProvider;
 use TYPO3\CMS\Scheduler\Controller\SchedulerModuleController;
+use TYPO3\CMS\Scheduler\SchedulerManagementAction;
 use TYPO3\CMS\Scheduler\Task\AbstractTask;
-use TYPO3\CMS\Scheduler\Task\Enumeration\Action;
 
 /**
  * Original TASK taken from EXT:reports
@@ -50,9 +49,8 @@ class DisableBeuserAdditionalFields extends AbstractAdditionalFieldProvider
      */
     public function getAdditionalFields(array &$taskInfo, $task, SchedulerModuleController $schedulerModule): array
     {
-        $currentSchedulerModuleAction = $schedulerModule->getCurrentAction();
 
-        if ($currentSchedulerModuleAction->equals(Action::EDIT)) {
+        if ($schedulerModule->getCurrentAction() === SchedulerManagementAction::EDIT) {
             $taskInfo[$this->fieldNames['time']] = $task->getTimeOfInactivityToDisable();
             $taskInfo[$this->fieldNames['email']] = $task->getNotificationEmail();
             $taskInfo[$this->fieldNames['testrunner']] = $task->isTestRunner();
@@ -67,7 +65,7 @@ class DisableBeuserAdditionalFields extends AbstractAdditionalFieldProvider
             'code' => '<input type="checkbox" name="tx_scheduler[' . $this->fieldNames['testrunner'] . ']" ' . $checked . '  />',
             'label' => $GLOBALS['LANG']->sL($this->languageFile . 'scheduler.fieldLabelTestRunner'),
             'cshKey' => '_MOD_txdisablebeuser',
-            'cshLabel' => $this->fieldNames['testrunner']
+            'cshLabel' => $this->fieldNames['testrunner'],
         ];
 
         $placeHolderText = $GLOBALS['LANG']->sL($this->languageFile . 'scheduler.placeholderText');
@@ -75,14 +73,14 @@ class DisableBeuserAdditionalFields extends AbstractAdditionalFieldProvider
             'code' => '<input type="text" class="form-control" placeholder="' . $placeHolderText . '" name="tx_scheduler[' . $this->fieldNames['time'] . ']" value="' . ($taskInfo[$this->fieldNames['time']] ?? '') . '" />',
             'label' => $GLOBALS['LANG']->sL($this->languageFile . 'scheduler.fieldLabel'),
             'cshKey' => '_MOD_txdisablebeuser',
-            'cshLabel' => $this->fieldNames['time']
+            'cshLabel' => $this->fieldNames['time'],
         ];
 
         $additionalFields[$this->fieldNames['email']] = [
             'code' => '<input type="text" class="form-control" placeholder="test@example.org; test@example.com" name="tx_scheduler[' . $this->fieldNames['email'] . ']" value="' . ($taskInfo[$this->fieldNames['email']] ?? '') . '" />',
             'label' => $GLOBALS['LANG']->sL($this->languageFile . 'scheduler.fieldLabelEmail'),
             'cshKey' => '_MOD_txdisablebeuser',
-            'cshLabel' => $this->fieldNames['email']
+            'cshLabel' => $this->fieldNames['email'],
         ];
         return $additionalFields;
     }
@@ -100,7 +98,7 @@ class DisableBeuserAdditionalFields extends AbstractAdditionalFieldProvider
         if (empty($submittedData[$this->fieldNames['time']])) {
             $this->addMessage(
                 $this->getLanguageService()->sL($this->languageFile . 'error.empty'),
-                AbstractMessage::ERROR
+                \TYPO3\CMS\Core\Type\ContextualFeedbackSeverity::ERROR
             );
             return false;
         }
@@ -110,7 +108,7 @@ class DisableBeuserAdditionalFields extends AbstractAdditionalFieldProvider
         } catch (\Exception $e) {
             $this->addMessage(
                 $this->getLanguageService()->sL($this->languageFile . 'error.wrongFormat'),
-                AbstractMessage::ERROR
+                \TYPO3\CMS\Core\Type\ContextualFeedbackSeverity::ERROR
             );
             return false;
         }
@@ -122,7 +120,7 @@ class DisableBeuserAdditionalFields extends AbstractAdditionalFieldProvider
                 if (!GeneralUtility::validEmail($email)) {
                     $this->addMessage(
                         $this->getLanguageService()->sL($this->languageFile . 'error.wrongEmail'),
-                        AbstractMessage::ERROR
+                        \TYPO3\CMS\Core\Type\ContextualFeedbackSeverity::ERROR
                     );
                     return false;
                     break;

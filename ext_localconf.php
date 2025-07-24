@@ -1,4 +1,5 @@
 <?php
+
 defined('TYPO3') or die();
 
 /**
@@ -8,5 +9,5 @@ $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['scheduler']['tasks'][SvenJuergens\Dis
     'extension' => 'disable_beuser',
     'title' => 'Disable Beuser',
     'description' => 'Disable Beuser after inactive time',
-    'additionalFields' => SvenJuergens\DisableBeuser\Task\DisableBeuserAdditionalFields::class
+    'additionalFields' => SvenJuergens\DisableBeuser\Task\DisableBeuserAdditionalFields::class,
 ];

@@ -4,7 +4,6 @@ namespace SvenJuergens\DisableBeuser\Event;
 
 final class AfterBeUserDisabledEvent
 {
-
     private array $disabledUser;
 
     private string $time;
