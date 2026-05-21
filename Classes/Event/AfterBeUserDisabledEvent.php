@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace SvenJuergens\DisableBeuser\Event;
 
 final readonly class AfterBeUserDisabledEvent

@@ -1,8 +1,8 @@
 <?php
 
-namespace SvenJuergens\DisableBeuser\Task;
+declare(strict_types=1);
 
-/**
+/*
  * This file is part of the TYPO3 CMS project.
  *
  * It is free software; you can redistribute it and/or modify it under
@@ -14,6 +14,9 @@ namespace SvenJuergens\DisableBeuser\Task;
  *
  * The TYPO3 project - inspiring people to share!
  */
+
+namespace SvenJuergens\DisableBeuser\Task;
+
 use TYPO3\CMS\Core\Localization\LanguageService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Scheduler\AbstractAdditionalFieldProvider;
