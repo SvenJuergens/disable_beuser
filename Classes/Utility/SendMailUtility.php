@@ -42,7 +42,8 @@ class SendMailUtility
             return false;
         }
 
-        $mailBody = self::getMailBody($disabledUser, $isTestRunner);
+        $htmlBody = self::getMailBody($disabledUser, $isTestRunner);
+        $textBody = self::getMailBody($disabledUser, $isTestRunner, 'txt');
 
         $setFrom = MailUtility::getSystemFromAddress();
         // Prepare mailer and send the mail
@@ -50,7 +51,8 @@ class SendMailUtility
         $mailer->setFrom($setFrom)
                 ->setSubject('SCHEDULER-Task DisableBeuser:' . htmlspecialchars($GLOBALS['TYPO3_CONF_VARS']['SYS']['sitename']))
                 ->setTo($notificationEmail)
-                ->html($mailBody);
+                ->html($htmlBody)
+                ->text($textBody);
         $eventDispatcher = GeneralUtility::makeInstance(EventDispatcherInterface::class);
         $eventDispatcher->dispatch(
             new BeforeMailsAreSentEvent($mailer, $disabledUser)
@@ -72,12 +74,19 @@ class SendMailUtility
      * @throws ExtensionConfigurationExtensionNotConfiguredException
      * @throws ExtensionConfigurationPathDoesNotExistException
      */
-    public static function getMailBody($disabledUser, $isTestRunner): string
+    public static function getMailBody($disabledUser, $isTestRunner, string $format = 'html'): string
     {
         $extensionConfig = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get('disable_beuser');
-        $templatePath = !empty($extensionConfig['templatePath'])
-            ? $extensionConfig['templatePath']
-            : 'EXT:disable_beuser/Resources/Private/Templates/emailTemplate.html';
+        $configuredHtmlTemplate = $extensionConfig['templatePath'] ?? '';
+        $defaultHtmlTemplate = 'EXT:disable_beuser/Resources/Private/Templates/emailTemplate.html';
+
+        if ($format === 'txt') {
+            // Sit next to the (possibly customised) HTML template by extension.
+            $baseTemplate = $configuredHtmlTemplate !== '' ? $configuredHtmlTemplate : $defaultHtmlTemplate;
+            $templatePath = preg_replace('/\.html?$/i', '.txt', $baseTemplate);
+        } else {
+            $templatePath = $configuredHtmlTemplate !== '' ? $configuredHtmlTemplate : $defaultHtmlTemplate;
+        }
 
         $viewFactory = GeneralUtility::makeInstance(ViewFactoryInterface::class);
         $view = $viewFactory->create(new ViewFactoryData(
