@@ -28,8 +28,6 @@ class DisableBeuser
 {
     private string $userTable = 'be_users';
 
-    private EventDispatcherInterface $eventDispatcher;
-
     /**
      * Fields to select
      * @var array
@@ -54,10 +52,10 @@ class DisableBeuser
      */
     protected int $timestamp;
 
-    public function __construct(private readonly ConnectionPool $connectionPool, EventDispatcherInterface $eventDispatcher)
-    {
-        $this->eventDispatcher = $eventDispatcher;
-    }
+    public function __construct(
+        private readonly ConnectionPool $connectionPool,
+        private readonly EventDispatcherInterface $eventDispatcher,
+    ) {}
 
     /**
      * @param $time
