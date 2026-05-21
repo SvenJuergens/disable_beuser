@@ -22,6 +22,7 @@ use Symfony\Component\Mime\Email;
 use TYPO3\CMS\Core\Configuration\Exception\ExtensionConfigurationExtensionNotConfiguredException;
 use TYPO3\CMS\Core\Configuration\Exception\ExtensionConfigurationPathDoesNotExistException;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
+use TYPO3\CMS\Core\Mail\MailerInterface;
 use TYPO3\CMS\Core\Mail\MailMessage;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MailUtility;
@@ -62,11 +63,17 @@ class SendMailUtility
         $eventDispatcher->dispatch(
             new BeforeMailsAreSentEvent($mailer, $disabledUser)
         );
-        $mailsSend = $mailer->send();
+        $mailerService = GeneralUtility::makeInstance(MailerInterface::class);
+        try {
+            $mailerService->send($mailer);
+            $mailsSend = true;
+        } catch (\Throwable) {
+            $mailsSend = false;
+        }
         $eventDispatcher->dispatch(
             new AfterMailsAreSentEvent($mailer, $disabledUser)
         );
-        return is_bool($mailsSend) ? $mailsSend : ($mailsSend > 0);
+        return $mailsSend;
     }
 
     /**
