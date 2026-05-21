@@ -29,11 +29,6 @@ use TYPO3\CMS\Scheduler\Task\AbstractTask;
  */
 class DisableBeuserAdditionalFields extends AbstractAdditionalFieldProvider
 {
-    /**
-     * Field Name.
-     *
-     * @var array
-     */
     protected array $fieldNames = [
         'time' => 'disablebeuser_timeOfInactivityToDisable',
         'email' => 'disablebeuser_email',
@@ -43,12 +38,8 @@ class DisableBeuserAdditionalFields extends AbstractAdditionalFieldProvider
     protected string $languageFile = 'LLL:EXT:disable_beuser/Resources/Private/Language/locallang.xlf:';
 
     /**
-     * Gets additional fields to render in the form to add/edit a task
-     *
-     * @param array $taskInfo Values of the fields from the add/edit task form
-     * @param DisableBeuserTask $task The task object being edited. Null when adding a task!
-     * @param SchedulerModuleController $schedulerModule Reference to the scheduler backend module
-     * @return array A two-dimensional array, array('Identifier' => array('fieldId' => array('code' => '', 'label' => '', 'cshKey' => '', 'cshLabel' => ''))
+     * @param DisableBeuserTask|null $task null when adding a new task
+     * @return array<string, array{code: string, label: string, cshKey: string, cshLabel: string}>
      */
     public function getAdditionalFields(array &$taskInfo, $task, SchedulerModuleController $schedulerModule): array
     {
@@ -88,16 +79,8 @@ class DisableBeuserAdditionalFields extends AbstractAdditionalFieldProvider
         return $additionalFields;
     }
 
-    /**
-     * Validates the additional fields' values
-     *
-     * @param array $submittedData An array containing the data submitted by the add/edit task form
-     * @param SchedulerModuleController $schedulerModule Reference to the scheduler backend module
-     * @return bool TRUE if validation was ok (or selected class is not relevant), FALSE otherwise
-     */
     public function validateAdditionalFields(array &$submittedData, SchedulerModuleController $schedulerModule): bool
     {
-        $validInput = true;
         if (empty($submittedData[$this->fieldNames['time']])) {
             $this->addMessage(
                 $this->getLanguageService()->sL($this->languageFile . 'error.empty'),
@@ -139,12 +122,6 @@ class DisableBeuserAdditionalFields extends AbstractAdditionalFieldProvider
             || $submittedData['disablebeuser_testrunner'] === 'on';
     }
 
-    /**
-     * Takes care of saving the additional fields' values in the task's object
-     *
-     * @param array $submittedData An array containing the data submitted by the add/edit task form
-     * @param AbstractTask $task Reference to the scheduler backend module
-     */
     public function saveAdditionalFields(array $submittedData, AbstractTask $task): void
     {
         if (!$task instanceof DisableBeuserTask) {
@@ -158,9 +135,6 @@ class DisableBeuserAdditionalFields extends AbstractAdditionalFieldProvider
         $task->setTestRunner($submittedData[$this->fieldNames['testrunner']] ?? false);
     }
 
-    /**
-     * @return LanguageService
-     */
     protected function getLanguageService(): LanguageService
     {
         return $GLOBALS['LANG'];

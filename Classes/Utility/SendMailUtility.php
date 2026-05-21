@@ -33,10 +33,6 @@ use TYPO3\CMS\Core\View\ViewFactoryInterface;
 class SendMailUtility
 {
     /**
-     * @param $notificationEmail
-     * @param $disabledUser
-     * @param $isTestRunner
-     * @return bool
      * @throws ExtensionConfigurationExtensionNotConfiguredException
      * @throws ExtensionConfigurationPathDoesNotExistException
      */
@@ -73,9 +69,6 @@ class SendMailUtility
     }
 
     /**
-     * @param $disabledUser
-     * @param $isTestRunner
-     * @return string
      * @throws ExtensionConfigurationExtensionNotConfiguredException
      * @throws ExtensionConfigurationPathDoesNotExistException
      */
