@@ -116,14 +116,13 @@ class DisableBeuserAdditionalFields extends AbstractAdditionalFieldProvider
         if (!empty($submittedData[$this->fieldNames['email']])) {
             $emails = GeneralUtility::trimExplode(';', $submittedData[$this->fieldNames['email']], true);
 
-            foreach ($emails as $key => $email) {
+            foreach ($emails as $email) {
                 if (!GeneralUtility::validEmail($email)) {
                     $this->addMessage(
                         $this->getLanguageService()->sL($this->languageFile . 'error.wrongEmail'),
                         \TYPO3\CMS\Core\Type\ContextualFeedbackSeverity::ERROR
                     );
                     return false;
-                    break;
                 }
             }
         }
@@ -133,13 +132,8 @@ class DisableBeuserAdditionalFields extends AbstractAdditionalFieldProvider
 
     public function validateTestRunner($submittedData): bool
     {
-        $validData = false;
-        if (!isset($submittedData['disablebeuser_testrunner'])) {
-            $validData = true;
-        } elseif ($submittedData['disablebeuser_testrunner'] === 'on') {
-            $validData = true;
-        }
-        return $validData;
+        return !isset($submittedData['disablebeuser_testrunner'])
+            || $submittedData['disablebeuser_testrunner'] === 'on';
     }
 
     /**
