@@ -18,7 +18,6 @@ namespace SvenJuergens\DisableBeuser\Utility;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use SvenJuergens\DisableBeuser\Event\AfterMailsAreSentEvent;
 use SvenJuergens\DisableBeuser\Event\BeforeMailsAreSentEvent;
-use Symfony\Component\Mime\Email;
 use TYPO3\CMS\Core\Configuration\Exception\ExtensionConfigurationExtensionNotConfiguredException;
 use TYPO3\CMS\Core\Configuration\Exception\ExtensionConfigurationPathDoesNotExistException;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
@@ -52,13 +51,8 @@ class SendMailUtility
         $mailer = GeneralUtility::makeInstance(MailMessage::class);
         $mailer->setFrom($setFrom)
                 ->setSubject('SCHEDULER-Task DisableBeuser:' . htmlspecialchars($GLOBALS['TYPO3_CONF_VARS']['SYS']['sitename']))
-                ->setTo($notificationEmail);
-        if ($mailer instanceof Email) {
-            // min TYPO3 10
-            $mailer->html($mailBody);
-        } else {
-            $mailer->setBody($mailBody, 'text/html');
-        }
+                ->setTo($notificationEmail)
+                ->html($mailBody);
         $eventDispatcher = GeneralUtility::makeInstance(EventDispatcherInterface::class);
         $eventDispatcher->dispatch(
             new BeforeMailsAreSentEvent($mailer, $disabledUser)
@@ -86,13 +80,13 @@ class SendMailUtility
     public static function getMailBody($disabledUser, $isTestRunner): string
     {
         $extensionConfig = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get('disable_beuser');
-        if (empty($extensionConfig)) {
-            $extensionConfig['templatePath'] = 'EXT:disable_beuser/Resources/Private/Templates/emailTemplate.html';
-        }
+        $templatePath = !empty($extensionConfig['templatePath'])
+            ? $extensionConfig['templatePath']
+            : 'EXT:disable_beuser/Resources/Private/Templates/emailTemplate.html';
 
         $viewFactory = GeneralUtility::makeInstance(ViewFactoryInterface::class);
         $view = $viewFactory->create(new ViewFactoryData(
-            templatePathAndFilename: $extensionConfig['templatePath'],
+            templatePathAndFilename: $templatePath,
         ));
         $view->assignMultiple([
             'disabledUser' => $disabledUser,
