@@ -25,7 +25,8 @@ use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Mail\MailMessage;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MailUtility;
-use TYPO3\CMS\Fluid\View\StandaloneView;
+use TYPO3\CMS\Core\View\ViewFactoryData;
+use TYPO3\CMS\Core\View\ViewFactoryInterface;
 
 class SendMailUtility
 {
@@ -82,9 +83,10 @@ class SendMailUtility
             $extensionConfig['templatePath'] = 'EXT:disable_beuser/Resources/Private/Templates/emailTemplate.html';
         }
 
-        $templateFile = GeneralUtility::getFileAbsFileName($extensionConfig['templatePath']);
-        $view = GeneralUtility::makeInstance(StandaloneView::class);
-        $view->setTemplatePathAndFilename($templateFile);
+        $viewFactory = GeneralUtility::makeInstance(ViewFactoryInterface::class);
+        $view = $viewFactory->create(new ViewFactoryData(
+            templatePathAndFilename: $extensionConfig['templatePath'],
+        ));
         $view->assignMultiple([
             'disabledUser' => $disabledUser,
             'isTestRunner' => $isTestRunner,
