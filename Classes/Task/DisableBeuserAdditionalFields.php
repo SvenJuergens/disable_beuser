@@ -53,28 +53,37 @@ class DisableBeuserAdditionalFields extends AbstractAdditionalFieldProvider
             $checked = '';
         }
 
+        $languageService = $this->getLanguageService();
         $additionalFields = [];
 
-        $additionalFields[$this->fieldNames['testrunner']] = [
-            'code' => '<input type="checkbox" name="tx_scheduler[' . $this->fieldNames['testrunner'] . ']" ' . $checked . '  />',
-            'label' => $GLOBALS['LANG']->sL($this->languageFile . 'scheduler.fieldLabelTestRunner'),
+        $fieldId = $this->fieldNames['testrunner'];
+        $additionalFields[$fieldId] = [
+            'code' => '<input type="checkbox" id="' . $fieldId . '" name="tx_scheduler[' . $fieldId . ']" ' . $checked . '/>',
+            'label' => $languageService->sL($this->languageFile . 'scheduler.fieldLabelTestRunner'),
+            'description' => $languageService->sL($this->languageFile . 'scheduler.fieldDescriptionTestRunner'),
+            'type' => 'check',
             'cshKey' => '_MOD_txdisablebeuser',
-            'cshLabel' => $this->fieldNames['testrunner'],
+            'cshLabel' => $fieldId,
         ];
 
-        $placeHolderText = $GLOBALS['LANG']->sL($this->languageFile . 'scheduler.placeholderText');
-        $additionalFields[$this->fieldNames['time']] = [
-            'code' => '<input type="text" class="form-control" placeholder="' . $placeHolderText . '" name="tx_scheduler[' . $this->fieldNames['time'] . ']" value="' . ($taskInfo[$this->fieldNames['time']] ?? '') . '" />',
-            'label' => $GLOBALS['LANG']->sL($this->languageFile . 'scheduler.fieldLabel'),
+        $fieldId = $this->fieldNames['time'];
+        $additionalFields[$fieldId] = [
+            'code' => '<input type="text" class="form-control" id="' . $fieldId . '" name="tx_scheduler[' . $fieldId . ']" value="' . htmlspecialchars((string)($taskInfo[$fieldId] ?? '')) . '"/>',
+            'label' => $languageService->sL($this->languageFile . 'scheduler.fieldLabel'),
+            'description' => $languageService->sL($this->languageFile . 'scheduler.fieldDescription'),
+            'type' => 'input',
             'cshKey' => '_MOD_txdisablebeuser',
-            'cshLabel' => $this->fieldNames['time'],
+            'cshLabel' => $fieldId,
         ];
 
-        $additionalFields[$this->fieldNames['email']] = [
-            'code' => '<input type="text" class="form-control" placeholder="test@example.org; test@example.com" name="tx_scheduler[' . $this->fieldNames['email'] . ']" value="' . ($taskInfo[$this->fieldNames['email']] ?? '') . '" />',
-            'label' => $GLOBALS['LANG']->sL($this->languageFile . 'scheduler.fieldLabelEmail'),
+        $fieldId = $this->fieldNames['email'];
+        $additionalFields[$fieldId] = [
+            'code' => '<input type="text" class="form-control" id="' . $fieldId . '" name="tx_scheduler[' . $fieldId . ']" value="' . htmlspecialchars((string)($taskInfo[$fieldId] ?? '')) . '"/>',
+            'label' => $languageService->sL($this->languageFile . 'scheduler.fieldLabelEmail'),
+            'description' => $languageService->sL($this->languageFile . 'scheduler.fieldDescriptionEmail'),
+            'type' => 'input',
             'cshKey' => '_MOD_txdisablebeuser',
-            'cshLabel' => $this->fieldNames['email'],
+            'cshLabel' => $fieldId,
         ];
         return $additionalFields;
     }

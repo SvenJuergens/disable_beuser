@@ -3,17 +3,23 @@
 	<file source-language="en" datatype="plaintext" original="messages" date="2015-11-02T20:33:46Z" product-name="">
 		<header/>
 		<body>
-			<trans-unit id="scheduler.placeholderText" xml:space="preserve">
-				<source>e.g. 3 months</source>
-			</trans-unit>
 			<trans-unit id="scheduler.fieldLabel" xml:space="preserve">
-				<source>Time of Inactivity to disable Beuser</source>
+				<source>Inactivity duration</source>
 			</trans-unit>
 			<trans-unit id="scheduler.fieldLabelEmail" xml:space="preserve">
-				<source>Notification Email (optional) </source>
+				<source>Notification email (optional)</source>
 			</trans-unit>
 			<trans-unit id="scheduler.fieldLabelTestRunner" xml:space="preserve">
-				<source>TestRunner (optional)</source>
+				<source>Dry run (optional)</source>
+			</trans-unit>
+			<trans-unit id="scheduler.fieldDescription" xml:space="preserve">
+				<source>Relative date/time expression, e.g. "3 months" or "14 days".</source>
+			</trans-unit>
+			<trans-unit id="scheduler.fieldDescriptionEmail" xml:space="preserve">
+				<source>Separate multiple addresses with semicolons, e.g. "test@example.org; test@example.com".</source>
+			</trans-unit>
+			<trans-unit id="scheduler.fieldDescriptionTestRunner" xml:space="preserve">
+				<source>Simulate the run and send the report without actually disabling any user.</source>
 			</trans-unit>
 			<trans-unit id="error.empty" xml:space="preserve">
 				<source>please set a date/time format: http://php.net/manual/de/datetime.formats.php</source>
