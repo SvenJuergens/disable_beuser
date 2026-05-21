@@ -1,34 +1,21 @@
 <?php
 
+declare(strict_types=1);
+
 namespace SvenJuergens\DisableBeuser\Event;
 
-final class AfterBeUserDisabledEvent
+final readonly class AfterBeUserDisabledEvent
 {
-    private array $disabledUser;
+    public function __construct(
+        private array $disabledUser,
+        private string $time,
+    ) {}
 
-    private string $time;
-
-    /**
-     * @param array $disabledUser
-     * @param string $time
-     */
-    public function __construct(array $disabledUser, string $time)
-    {
-        $this->disabledUser = $disabledUser;
-        $this->time = $time;
-    }
-
-    /**
-     * @return array
-     */
     public function getDisabledUser(): array
     {
         return $this->disabledUser;
     }
 
-    /**
-     * @return string
-     */
     public function getTime(): string
     {
         return $this->time;

@@ -1,8 +1,8 @@
 <?php
 
-namespace SvenJuergens\DisableBeuser\Task;
+declare(strict_types=1);
 
-/**
+/*
  * This file is part of the TYPO3 CMS project.
  *
  * It is free software; you can redistribute it and/or modify it under
@@ -14,6 +14,9 @@ namespace SvenJuergens\DisableBeuser\Task;
  *
  * The TYPO3 project - inspiring people to share!
  */
+
+namespace SvenJuergens\DisableBeuser\Task;
+
 use TYPO3\CMS\Core\Localization\LanguageService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Scheduler\AbstractAdditionalFieldProvider;
@@ -26,11 +29,6 @@ use TYPO3\CMS\Scheduler\Task\AbstractTask;
  */
 class DisableBeuserAdditionalFields extends AbstractAdditionalFieldProvider
 {
-    /**
-     * Field Name.
-     *
-     * @var array
-     */
     protected array $fieldNames = [
         'time' => 'disablebeuser_timeOfInactivityToDisable',
         'email' => 'disablebeuser_email',
@@ -40,12 +38,8 @@ class DisableBeuserAdditionalFields extends AbstractAdditionalFieldProvider
     protected string $languageFile = 'LLL:EXT:disable_beuser/Resources/Private/Language/locallang.xlf:';
 
     /**
-     * Gets additional fields to render in the form to add/edit a task
-     *
-     * @param array $taskInfo Values of the fields from the add/edit task form
-     * @param DisableBeuserTask $task The task object being edited. Null when adding a task!
-     * @param SchedulerModuleController $schedulerModule Reference to the scheduler backend module
-     * @return array A two-dimensional array, array('Identifier' => array('fieldId' => array('code' => '', 'label' => '', 'cshKey' => '', 'cshLabel' => ''))
+     * @param DisableBeuserTask|null $task null when adding a new task
+     * @return array<string, array{code: string, label: string, cshKey: string, cshLabel: string}>
      */
     public function getAdditionalFields(array &$taskInfo, $task, SchedulerModuleController $schedulerModule): array
     {
@@ -59,42 +53,43 @@ class DisableBeuserAdditionalFields extends AbstractAdditionalFieldProvider
             $checked = '';
         }
 
+        $languageService = $this->getLanguageService();
         $additionalFields = [];
 
-        $additionalFields[$this->fieldNames['testrunner']] = [
-            'code' => '<input type="checkbox" name="tx_scheduler[' . $this->fieldNames['testrunner'] . ']" ' . $checked . '  />',
-            'label' => $GLOBALS['LANG']->sL($this->languageFile . 'scheduler.fieldLabelTestRunner'),
+        $fieldId = $this->fieldNames['testrunner'];
+        $additionalFields[$fieldId] = [
+            'code' => '<input type="checkbox" id="' . $fieldId . '" name="tx_scheduler[' . $fieldId . ']" ' . $checked . '/>',
+            'label' => $languageService->sL($this->languageFile . 'scheduler.fieldLabelTestRunner'),
+            'description' => $languageService->sL($this->languageFile . 'scheduler.fieldDescriptionTestRunner'),
+            'type' => 'check',
             'cshKey' => '_MOD_txdisablebeuser',
-            'cshLabel' => $this->fieldNames['testrunner'],
+            'cshLabel' => $fieldId,
         ];
 
-        $placeHolderText = $GLOBALS['LANG']->sL($this->languageFile . 'scheduler.placeholderText');
-        $additionalFields[$this->fieldNames['time']] = [
-            'code' => '<input type="text" class="form-control" placeholder="' . $placeHolderText . '" name="tx_scheduler[' . $this->fieldNames['time'] . ']" value="' . ($taskInfo[$this->fieldNames['time']] ?? '') . '" />',
-            'label' => $GLOBALS['LANG']->sL($this->languageFile . 'scheduler.fieldLabel'),
+        $fieldId = $this->fieldNames['time'];
+        $additionalFields[$fieldId] = [
+            'code' => '<input type="text" class="form-control" id="' . $fieldId . '" name="tx_scheduler[' . $fieldId . ']" value="' . htmlspecialchars((string)($taskInfo[$fieldId] ?? '')) . '"/>',
+            'label' => $languageService->sL($this->languageFile . 'scheduler.fieldLabel'),
+            'description' => $languageService->sL($this->languageFile . 'scheduler.fieldDescription'),
+            'type' => 'input',
             'cshKey' => '_MOD_txdisablebeuser',
-            'cshLabel' => $this->fieldNames['time'],
+            'cshLabel' => $fieldId,
         ];
 
-        $additionalFields[$this->fieldNames['email']] = [
-            'code' => '<input type="text" class="form-control" placeholder="test@example.org; test@example.com" name="tx_scheduler[' . $this->fieldNames['email'] . ']" value="' . ($taskInfo[$this->fieldNames['email']] ?? '') . '" />',
-            'label' => $GLOBALS['LANG']->sL($this->languageFile . 'scheduler.fieldLabelEmail'),
+        $fieldId = $this->fieldNames['email'];
+        $additionalFields[$fieldId] = [
+            'code' => '<input type="text" class="form-control" id="' . $fieldId . '" name="tx_scheduler[' . $fieldId . ']" value="' . htmlspecialchars((string)($taskInfo[$fieldId] ?? '')) . '"/>',
+            'label' => $languageService->sL($this->languageFile . 'scheduler.fieldLabelEmail'),
+            'description' => $languageService->sL($this->languageFile . 'scheduler.fieldDescriptionEmail'),
+            'type' => 'input',
             'cshKey' => '_MOD_txdisablebeuser',
-            'cshLabel' => $this->fieldNames['email'],
+            'cshLabel' => $fieldId,
         ];
         return $additionalFields;
     }
 
-    /**
-     * Validates the additional fields' values
-     *
-     * @param array $submittedData An array containing the data submitted by the add/edit task form
-     * @param SchedulerModuleController $schedulerModule Reference to the scheduler backend module
-     * @return bool TRUE if validation was ok (or selected class is not relevant), FALSE otherwise
-     */
     public function validateAdditionalFields(array &$submittedData, SchedulerModuleController $schedulerModule): bool
     {
-        $validInput = true;
         if (empty($submittedData[$this->fieldNames['time']])) {
             $this->addMessage(
                 $this->getLanguageService()->sL($this->languageFile . 'error.empty'),
@@ -116,14 +111,13 @@ class DisableBeuserAdditionalFields extends AbstractAdditionalFieldProvider
         if (!empty($submittedData[$this->fieldNames['email']])) {
             $emails = GeneralUtility::trimExplode(';', $submittedData[$this->fieldNames['email']], true);
 
-            foreach ($emails as $key => $email) {
+            foreach ($emails as $email) {
                 if (!GeneralUtility::validEmail($email)) {
                     $this->addMessage(
                         $this->getLanguageService()->sL($this->languageFile . 'error.wrongEmail'),
                         \TYPO3\CMS\Core\Type\ContextualFeedbackSeverity::ERROR
                     );
                     return false;
-                    break;
                 }
             }
         }
@@ -133,21 +127,10 @@ class DisableBeuserAdditionalFields extends AbstractAdditionalFieldProvider
 
     public function validateTestRunner($submittedData): bool
     {
-        $validData = false;
-        if (!isset($submittedData['disablebeuser_testrunner'])) {
-            $validData = true;
-        } elseif ($submittedData['disablebeuser_testrunner'] === 'on') {
-            $validData = true;
-        }
-        return $validData;
+        return !isset($submittedData['disablebeuser_testrunner'])
+            || $submittedData['disablebeuser_testrunner'] === 'on';
     }
 
-    /**
-     * Takes care of saving the additional fields' values in the task's object
-     *
-     * @param array $submittedData An array containing the data submitted by the add/edit task form
-     * @param AbstractTask $task Reference to the scheduler backend module
-     */
     public function saveAdditionalFields(array $submittedData, AbstractTask $task): void
     {
         if (!$task instanceof DisableBeuserTask) {
@@ -156,14 +139,11 @@ class DisableBeuserAdditionalFields extends AbstractAdditionalFieldProvider
                 1295012802
             );
         }
-        $task->setTimeOfInactivityToDisable(htmlspecialchars($submittedData[$this->fieldNames['time']]));
-        $task->setNotificationEmail($submittedData[$this->fieldNames['email']]);
-        $task->setTestRunner($submittedData[$this->fieldNames['testrunner']] ?? false);
+        $task->setTimeOfInactivityToDisable(htmlspecialchars((string)($submittedData[$this->fieldNames['time']] ?? '')));
+        $task->setNotificationEmail((string)($submittedData[$this->fieldNames['email']] ?? ''));
+        $task->setTestRunner(($submittedData[$this->fieldNames['testrunner']] ?? '') === 'on');
     }
 
-    /**
-     * @return LanguageService
-     */
     protected function getLanguageService(): LanguageService
     {
         return $GLOBALS['LANG'];

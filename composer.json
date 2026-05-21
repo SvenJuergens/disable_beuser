@@ -11,7 +11,7 @@
   "license": "GPL-2.0-or-later",
   "type": "typo3-cms-extension",
   "require": {
-    "typo3/cms-core": "^13.4",
+    "typo3/cms-core": "^13.4 || ^14.0",
     "php": ">=8.2.0",
     "ext-pdo": "*"
   },

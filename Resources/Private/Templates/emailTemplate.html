@@ -1,10 +1,11 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+	<meta charset="UTF-8">
 	<title></title>
 </head>
-<body>
-	<h1>
+<body style="font-family: -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif; color: #1a1a1a; margin: 0; padding: 24px;">
+	<h1 style="font-size: 20px; margin: 0 0 16px;">
 		<f:if condition="{isTestRunner}">
 			<f:then>
 				<f:translate key="LLL:EXT:disable_beuser/Resources/Private/Language/locallang.xlf:email.disableduserIsTestRunner"/>
@@ -14,29 +15,29 @@
 			</f:else>
 		</f:if>
 	</h1>
-	<table>
-		<thead align="left">
-			<tr>
-				<th><f:translate key="LLL:EXT:disable_beuser/Resources/Private/Language/locallang.xlf:email.username"/></th>
-				<th><f:translate key="LLL:EXT:disable_beuser/Resources/Private/Language/locallang.xlf:email.lastlogin"/></th>
-				<th><f:translate key="LLL:EXT:disable_beuser/Resources/Private/Language/locallang.xlf:email.realName" default="Name"/></th>
-				<th><f:translate key="LLL:EXT:disable_beuser/Resources/Private/Language/locallang.xlf:email.email" default="E-Mail"/></th>
-				<th><f:translate key="LLL:EXT:disable_beuser/Resources/Private/Language/locallang.xlf:email.crdate" default="Erstellungsdatum"/></th>
+	<table cellspacing="0" cellpadding="0" style="border-collapse: collapse; font-size: 14px;">
+		<thead>
+			<tr style="background: #f2f2f2; text-align: left;">
+				<th style="padding: 8px 16px; border-bottom: 2px solid #d0d0d0; white-space: nowrap;"><f:translate key="LLL:EXT:disable_beuser/Resources/Private/Language/locallang.xlf:email.username"/></th>
+				<th style="padding: 8px 16px; border-bottom: 2px solid #d0d0d0; white-space: nowrap;"><f:translate key="LLL:EXT:disable_beuser/Resources/Private/Language/locallang.xlf:email.lastlogin"/></th>
+				<th style="padding: 8px 16px; border-bottom: 2px solid #d0d0d0; white-space: nowrap;"><f:translate key="LLL:EXT:disable_beuser/Resources/Private/Language/locallang.xlf:email.realName" default="Name"/></th>
+				<th style="padding: 8px 16px; border-bottom: 2px solid #d0d0d0; white-space: nowrap;"><f:translate key="LLL:EXT:disable_beuser/Resources/Private/Language/locallang.xlf:email.email" default="E-Mail"/></th>
+				<th style="padding: 8px 16px; border-bottom: 2px solid #d0d0d0; white-space: nowrap;"><f:translate key="LLL:EXT:disable_beuser/Resources/Private/Language/locallang.xlf:email.crdate" default="Erstellungsdatum"/></th>
 			</tr>
 		</thead>
 		<tbody>
-			<f:for each="{disabledUser}" as="beuser" >
-				<tr>
-					<td>{beuser.username}</td>
-					<td>
+			<f:for each="{disabledUser}" as="beuser" iteration="iteration">
+				<tr style="background: {f:if(condition: iteration.isOdd, then: '#fafafa', else: '#ffffff')};">
+					<td style="padding: 8px 16px; border-bottom: 1px solid #e5e5e5;">{beuser.username}</td>
+					<td style="padding: 8px 16px; border-bottom: 1px solid #e5e5e5; white-space: nowrap;">
 						<f:if condition="{beuser.lastlogin}">
 							<f:then><f:format.date format="d.m.Y - H:i">@{beuser.lastlogin}</f:format.date></f:then>
 							<f:else><f:translate key="LLL:EXT:beuser/Resources/Private/Language/locallang.xlf:never"/></f:else>
 						</f:if>
 					</td>
-					<td>{beuser.realName}</td>
-					<td>{beuser.email}</td>
-					<td><f:format.date format="d.m.Y - H:i">@{beuser.crdate}</f:format.date></td>
+					<td style="padding: 8px 16px; border-bottom: 1px solid #e5e5e5;">{beuser.realName}</td>
+					<td style="padding: 8px 16px; border-bottom: 1px solid #e5e5e5;">{beuser.email}</td>
+					<td style="padding: 8px 16px; border-bottom: 1px solid #e5e5e5; white-space: nowrap;"><f:format.date format="d.m.Y - H:i">@{beuser.crdate}</f:format.date></td>
 				</tr>
 			</f:for>
 		</tbody>

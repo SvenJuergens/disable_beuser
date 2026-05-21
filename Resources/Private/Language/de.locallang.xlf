@@ -3,21 +3,29 @@
 	<file source-language="en" target-language="de" datatype="plaintext" original="messages" date="2015-11-02T20:33:47Z" product-name="">
 		<header/>
 		<body>
-			<trans-unit id="scheduler.placeholderText" xml:space="preserve" approved="yes">
-				<source>e.g. 3 months</source>
-				<target>z.B. 3 months</target>
-			</trans-unit>
 			<trans-unit id="scheduler.fieldLabel" xml:space="preserve" approved="yes">
-				<source>Time of Inactivity to disable Beuser</source>
-				<target>Zeitspanne nach der Benutzer deaktiviert werden sollen</target>
+				<source>Inactivity duration</source>
+				<target>Inaktivitätsdauer</target>
 			</trans-unit>
 			<trans-unit id="scheduler.fieldLabelEmail" xml:space="preserve" approved="yes">
-				<source>Notification Email (optional) </source>
-				<target>E-Mail für Benachrichtigung (optional)</target>
+				<source>Notification email (optional)</source>
+				<target>Benachrichtigung (optional)</target>
 			</trans-unit>
-				<trans-unit id="scheduler.fieldLabelTestRunner" xml:space="preserve">
-				<source>TestRunner (optional)</source>
-				<target>TestRunner (optional)</target>
+			<trans-unit id="scheduler.fieldLabelTestRunner" xml:space="preserve" approved="yes">
+				<source>Dry run (optional)</source>
+				<target>Probelauf (optional)</target>
+			</trans-unit>
+			<trans-unit id="scheduler.fieldDescription" xml:space="preserve" approved="yes">
+				<source>Relative date/time expression, e.g. "3 months" or "14 days".</source>
+				<target>Relativer Date/Time-Ausdruck, z.B. "3 months" oder "14 days".</target>
+			</trans-unit>
+			<trans-unit id="scheduler.fieldDescriptionEmail" xml:space="preserve" approved="yes">
+				<source>Separate multiple addresses with semicolons, e.g. "test@example.org; test@example.com".</source>
+				<target>Mehrere Adressen mit Semikolon trennen, z.B. "test@example.org; test@example.com".</target>
+			</trans-unit>
+			<trans-unit id="scheduler.fieldDescriptionTestRunner" xml:space="preserve" approved="yes">
+				<source>Simulate the run and send the report without actually disabling any user.</source>
+				<target>Lauf simulieren und Report verschicken, ohne tatsächlich Benutzer zu deaktivieren.</target>
 			</trans-unit>
 			<trans-unit id="error.empty" xml:space="preserve" approved="yes">
 				<source>please set a date/time format: https://php.net/manual/de/datetime.formats.php</source>

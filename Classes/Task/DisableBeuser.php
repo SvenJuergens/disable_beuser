@@ -1,8 +1,8 @@
 <?php
 
-namespace SvenJuergens\DisableBeuser\Task;
+declare(strict_types=1);
 
-/**
+/*
  * This file is part of the TYPO3 CMS project.
  *
  * It is free software; you can redistribute it and/or modify it under
@@ -14,6 +14,8 @@ namespace SvenJuergens\DisableBeuser\Task;
  *
  * The TYPO3 project - inspiring people to share!
  */
+
+namespace SvenJuergens\DisableBeuser\Task;
 
 use Psr\EventDispatcher\EventDispatcherInterface;
 use SvenJuergens\DisableBeuser\Event\AfterBeUserDisabledEvent;
@@ -28,42 +30,20 @@ class DisableBeuser
 {
     private string $userTable = 'be_users';
 
-    private EventDispatcherInterface $eventDispatcher;
-
-    /**
-     * Fields to select
-     * @var array
-     */
     protected array $fields = ['uid', 'username', 'lastlogin', 'realName', 'email', 'crdate'];
 
-    /**
-     * sendNotificationEmail
-     *
-     * @var bool
-     */
     protected bool $sendNotificationEmail = false;
 
-    /**
-     * isTestRunner
-     *
-     * @var bool
-     */
     protected bool $isTestRunner = false;
-    /**
-     * @var int
-     */
+
     protected int $timestamp;
 
-    public function __construct(private readonly ConnectionPool $connectionPool, EventDispatcherInterface $eventDispatcher)
-    {
-        $this->eventDispatcher = $eventDispatcher;
-    }
+    public function __construct(
+        private readonly ConnectionPool $connectionPool,
+        private readonly EventDispatcherInterface $eventDispatcher,
+    ) {}
 
     /**
-     * @param $time
-     * @param $notificationEmail
-     * @param $testRunner
-     * @return bool
      * @throws ExtensionConfigurationExtensionNotConfiguredException
      * @throws ExtensionConfigurationPathDoesNotExistException
      * @throws \Doctrine\DBAL\Exception
@@ -94,10 +74,6 @@ class DisableBeuser
     }
 
     /**
-     * returns a timestamp
-     *
-     * @param $time
-     * @return int
      * @throws \Exception
      */
     public function convertToTimeStamp($time): int
@@ -127,11 +103,6 @@ class DisableBeuser
     }
 
     /**
-     * Checks if it's necessary to send a notification Mail
-     *
-     * @param $notificationEmail
-     * @param $disabledUser
-     * @return bool
      * @throws ExtensionConfigurationExtensionNotConfiguredException
      * @throws ExtensionConfigurationPathDoesNotExistException
      */
@@ -144,7 +115,7 @@ class DisableBeuser
 
         $emails = GeneralUtility::trimExplode(';', $notificationEmail, true);
 
-        foreach ($emails as $key => $email) {
+        foreach ($emails as $email) {
             $returnValue = SendMailUtility::sendEmail($email, $disabledUser, $this->isTestRunner);
             if ($returnValue === false) {
                 break;
@@ -154,13 +125,10 @@ class DisableBeuser
     }
 
     /**
-     * get alle user
-     * welche NICHT Administratoren sind
-     * und einen lastlogin kleiner/gleich $timestamp haben
-     * und lastlogin NICHT 0 ist → die haben sich noch nicht eingeloggt
-     * und nicht mit '_cli' beginnen
+     * Return all non-admin users with a non-zero lastlogin older than the
+     * configured threshold, excluding `_cli_*` accounts and accounts marked
+     * with `donotdisable`.
      *
-     * @return array
      * @throws \Doctrine\DBAL\Exception
      */
     protected function getUsersNotLoggedInInTime(): array
@@ -184,13 +152,10 @@ class DisableBeuser
     }
 
     /**
-     * get alle user
-     * welche NICHT Administratoren sind
-     * und einen lastlogin GLEICH 0 haben -> die haben sich noch nicht eingeloggt
-     * UND ein Erstellungsdatum kleiner/gleich $timestamp haben
-     * und nicht mit '_cli' beginnen
+     * Return all non-admin users that never logged in (lastlogin = 0) and
+     * whose creation date is older than the configured threshold,
+     * excluding `_cli_*` accounts and accounts marked with `donotdisable`.
      *
-     * @return array
      * @throws \Doctrine\DBAL\Exception
      */
     protected function getUsersNeverNotLoggedIn(): array
@@ -213,9 +178,6 @@ class DisableBeuser
             ->fetchAllAssociative();
     }
 
-    /**
-     * @return string
-     */
     public function getUserTable(): string
     {
         return $this->userTable;

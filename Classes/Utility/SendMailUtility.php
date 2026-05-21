@@ -1,8 +1,8 @@
 <?php
 
-namespace SvenJuergens\DisableBeuser\Utility;
+declare(strict_types=1);
 
-/**
+/*
  * This file is part of the TYPO3 CMS project.
  *
  * It is free software; you can redistribute it and/or modify it under
@@ -15,25 +15,24 @@ namespace SvenJuergens\DisableBeuser\Utility;
  * The TYPO3 project - inspiring people to share!
  */
 
+namespace SvenJuergens\DisableBeuser\Utility;
+
 use Psr\EventDispatcher\EventDispatcherInterface;
 use SvenJuergens\DisableBeuser\Event\AfterMailsAreSentEvent;
 use SvenJuergens\DisableBeuser\Event\BeforeMailsAreSentEvent;
-use Symfony\Component\Mime\Email;
 use TYPO3\CMS\Core\Configuration\Exception\ExtensionConfigurationExtensionNotConfiguredException;
 use TYPO3\CMS\Core\Configuration\Exception\ExtensionConfigurationPathDoesNotExistException;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
+use TYPO3\CMS\Core\Mail\MailerInterface;
 use TYPO3\CMS\Core\Mail\MailMessage;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MailUtility;
-use TYPO3\CMS\Fluid\View\StandaloneView;
+use TYPO3\CMS\Core\View\ViewFactoryData;
+use TYPO3\CMS\Core\View\ViewFactoryInterface;
 
 class SendMailUtility
 {
     /**
-     * @param $notificationEmail
-     * @param $disabledUser
-     * @param $isTestRunner
-     * @return bool
      * @throws ExtensionConfigurationExtensionNotConfiguredException
      * @throws ExtensionConfigurationPathDoesNotExistException
      */
@@ -43,48 +42,56 @@ class SendMailUtility
             return false;
         }
 
-        $mailBody = self::getMailBody($disabledUser, $isTestRunner);
+        $htmlBody = self::getMailBody($disabledUser, $isTestRunner);
+        $textBody = self::getMailBody($disabledUser, $isTestRunner, 'txt');
 
         $setFrom = MailUtility::getSystemFromAddress();
         // Prepare mailer and send the mail
         $mailer = GeneralUtility::makeInstance(MailMessage::class);
         $mailer->setFrom($setFrom)
                 ->setSubject('SCHEDULER-Task DisableBeuser:' . htmlspecialchars($GLOBALS['TYPO3_CONF_VARS']['SYS']['sitename']))
-                ->setTo($notificationEmail);
-        if ($mailer instanceof Email) {
-            // min TYPO3 10
-            $mailer->html($mailBody);
-        } else {
-            $mailer->setBody($mailBody, 'text/html');
-        }
+                ->setTo($notificationEmail)
+                ->html($htmlBody)
+                ->text($textBody);
         $eventDispatcher = GeneralUtility::makeInstance(EventDispatcherInterface::class);
         $eventDispatcher->dispatch(
             new BeforeMailsAreSentEvent($mailer, $disabledUser)
         );
-        $mailsSend = $mailer->send();
+        $mailerService = GeneralUtility::makeInstance(MailerInterface::class);
+        try {
+            $mailerService->send($mailer);
+            $mailsSend = true;
+        } catch (\Throwable) {
+            $mailsSend = false;
+        }
         $eventDispatcher->dispatch(
             new AfterMailsAreSentEvent($mailer, $disabledUser)
         );
-        return is_bool($mailsSend) ? $mailsSend : ($mailsSend > 0);
+        return $mailsSend;
     }
 
     /**
-     * @param $disabledUser
-     * @param $isTestRunner
-     * @return string
      * @throws ExtensionConfigurationExtensionNotConfiguredException
      * @throws ExtensionConfigurationPathDoesNotExistException
      */
-    public static function getMailBody($disabledUser, $isTestRunner): string
+    public static function getMailBody($disabledUser, $isTestRunner, string $format = 'html'): string
     {
         $extensionConfig = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get('disable_beuser');
-        if (empty($extensionConfig)) {
-            $extensionConfig['templatePath'] = 'EXT:disable_beuser/Resources/Private/Templates/emailTemplate.html';
+        $configuredHtmlTemplate = $extensionConfig['templatePath'] ?? '';
+        $defaultHtmlTemplate = 'EXT:disable_beuser/Resources/Private/Templates/emailTemplate.html';
+
+        if ($format === 'txt') {
+            // Sit next to the (possibly customised) HTML template by extension.
+            $baseTemplate = $configuredHtmlTemplate !== '' ? $configuredHtmlTemplate : $defaultHtmlTemplate;
+            $templatePath = preg_replace('/\.html?$/i', '.txt', $baseTemplate);
+        } else {
+            $templatePath = $configuredHtmlTemplate !== '' ? $configuredHtmlTemplate : $defaultHtmlTemplate;
         }
 
-        $templateFile = GeneralUtility::getFileAbsFileName($extensionConfig['templatePath']);
-        $view = GeneralUtility::makeInstance(StandaloneView::class);
-        $view->setTemplatePathAndFilename($templateFile);
+        $viewFactory = GeneralUtility::makeInstance(ViewFactoryInterface::class);
+        $view = $viewFactory->create(new ViewFactoryData(
+            templatePathAndFilename: $templatePath,
+        ));
         $view->assignMultiple([
             'disabledUser' => $disabledUser,
             'isTestRunner' => $isTestRunner,

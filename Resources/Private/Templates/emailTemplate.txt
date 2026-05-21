@@ -1,0 +1,13 @@
+<f:if condition="{isTestRunner}">
+	<f:then><f:translate key="LLL:EXT:disable_beuser/Resources/Private/Language/locallang.xlf:email.disableduserIsTestRunner"/></f:then>
+	<f:else><f:translate key="LLL:EXT:disable_beuser/Resources/Private/Language/locallang.xlf:email.disableduser"/></f:else>
+</f:if>
+
+<f:for each="{disabledUser}" as="beuser">
+- <f:translate key="LLL:EXT:disable_beuser/Resources/Private/Language/locallang.xlf:email.username"/>: {beuser.username}
+  <f:translate key="LLL:EXT:disable_beuser/Resources/Private/Language/locallang.xlf:email.realName" default="Name"/>: {beuser.realName}
+  <f:translate key="LLL:EXT:disable_beuser/Resources/Private/Language/locallang.xlf:email.email" default="E-Mail"/>: {beuser.email}
+  <f:translate key="LLL:EXT:disable_beuser/Resources/Private/Language/locallang.xlf:email.lastlogin"/>: <f:if condition="{beuser.lastlogin}"><f:then><f:format.date format="d.m.Y - H:i">@{beuser.lastlogin}</f:format.date></f:then><f:else><f:translate key="LLL:EXT:beuser/Resources/Private/Language/locallang.xlf:never"/></f:else></f:if>
+  <f:translate key="LLL:EXT:disable_beuser/Resources/Private/Language/locallang.xlf:email.crdate" default="Erstellungsdatum"/>: <f:format.date format="d.m.Y - H:i">@{beuser.crdate}</f:format.date>
+
+</f:for>
