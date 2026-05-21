@@ -139,9 +139,9 @@ class DisableBeuserAdditionalFields extends AbstractAdditionalFieldProvider
                 1295012802
             );
         }
-        $task->setTimeOfInactivityToDisable(htmlspecialchars($submittedData[$this->fieldNames['time']]));
-        $task->setNotificationEmail($submittedData[$this->fieldNames['email']]);
-        $task->setTestRunner($submittedData[$this->fieldNames['testrunner']] ?? false);
+        $task->setTimeOfInactivityToDisable(htmlspecialchars((string)($submittedData[$this->fieldNames['time']] ?? '')));
+        $task->setNotificationEmail((string)($submittedData[$this->fieldNames['email']] ?? ''));
+        $task->setTestRunner(($submittedData[$this->fieldNames['testrunner']] ?? '') === 'on');
     }
 
     protected function getLanguageService(): LanguageService
